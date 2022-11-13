@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>config</title>
+</head>
+<body>
+<form>
+    <fieldset>
+        <legend><h3>Config:</h3></legend>
+        <div>
+            <label for="favcolor">Select your favorite color: </label>
+            <select name="favcolor" id="favcolor_selector">
+                <option value="Red">Red</option>
+                <option value="Blue">Blue</option>
+                <option value="Yellow">Yellow</option>
+                <option value="Pink">Pink</option>
+                <option value="Green">Green</option>
+                <option value="Purple">Purple</option>
+            </select>
+        </div>
+        <input type="color" id="favcolor" name="favcolor" value="#ff0000"><br><br>
+
+        <div>
+            <label for="favfont">Select your favorite font: </label>
+            <select name="favfont" id="favfont">
+                <option value="Serif">Serif</option>
+                <option value="Sans-serif">Sans-serif</option>
+                <option value="Monospace">Monospace</option>
+                <option value="Cursive">Cursive</option>
+                <option value="Fantasy">Fantasy</option>
+            </select>
+        </div>
+        <label>Select theme: </label>
+        <div class="theme">
+            <div>
+                <input type="radio" id="dark" name="theme">
+                <label for="dark">dark</label>
+            </div>
+            <div>
+                <input type="radio" id="light" name="theme">
+                <label for="light">light</label>
+            </div>
+        </div>
+    </fieldset>
+    <input type="submit" value="Submit" class="button">
+    <input type="reset" value="Reset" class="button">
+</form>
+</body>
+</html>
