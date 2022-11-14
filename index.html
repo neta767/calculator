@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculatoe</title>
-    <!--    <link href="img/blue-flower.ico" rel="icon" type="image/x-icon">-->
+    <title>Calculator</title>
+    <link href="img/calculator.png" rel="icon" type="image/x-icon">
     <link media="screen and (min-width: 600px)" href="widescreen.css" rel="stylesheet">
     <!--    <link media="screen and (max-width: 600px)" href="smallscreen.css" rel="stylesheet">-->
     <script src="script.js" defer></script>
@@ -12,42 +12,41 @@
 <body>
 <div class="calculator">
     <div class="calculator-keys">
-        <button type="button" id="info" onclick="alert('Developer:Neta Kleman\nVersion: Calculator 1.0.0')"></button>
-        <h1>My Calculator</h1>
-        <button type="button" id="setting"></button>
+        <button type="button" id="info" onclick="alert('Developer: Neta Kleman\nVersion: Calculator 1.0.0')"><img
+                src="img/information.png"></button>
+        <h2>My Calculator</h2>
+        <button type="button" id="setting"><a href="config.html"><img src="img/setting.png"></a></button>
 
-        <button type="button" id="theme"></button>
+        <button type="button" id="theme"><img src="img/light-bulb.png" onclick="changeTheme()"></button>
         <input type="text" class="calculator-screen" disabled/>
-        <button type="button" id="back"></button>
+        <button type="button" id="back"><img src="img/return.png"></button>
 
 
-        <button type="button" id="history"></button>
+        <button type="button" id="history"><img src="img/history.png"></button>
         <button type="button" class="all-clear" id="all-clear">AC</button>
-        <button type="button" class="operator" id="/">&divide;</button>
+        <button type="button" id="/" onclick="displayButtonInfo('/')">&divide;</button>
 
         <button type="button" id="root"></button>
-        <button type="button" id="7">7</button>
-        <button type="button" id="8">8</button>
-        <button type="button" id="9">9</button>
-        <button type="button" class="operator" id="*">&times;</button>
+        <button type="button" class="number" id="7" onclick="displayButtonInfo(7)">7</button>
+        <button type="button" class="number" id="8" onclick="displayButtonInfo(8)">8</button>
+        <button type="button" class="number" id="9" onclick="displayButtonInfo(9)">9</button>
+        <button type="button" id="*" onclick="displayButtonInfo('*')">&times;</button>
 
         <button type="button" id="?"></button>
-        <button type="button" id="4">4</button>
-        <button type="button" id="5">5</button>
-        <button type="button" id="6">6</button>
-        <button type="button" class="operator" id="-">-</button>
+        <button type="button" class="number" id="4" onclick="displayButtonInfo(4)">4</button>
+        <button type="button" class="number" id="5" onclick="displayButtonInfo(5)">5</button>
+        <button type="button" class="number" id="6" onclick="displayButtonInfo(6)">6</button>
+        <button type="button" id="-" onclick="displayButtonInfo('-')">-</button>
 
-        <button type="button"></button>
-        <button type="button" id="1">1</button>
-        <button type="button" id="2">2</button>
-        <button type="button" id="3">3</button>
-        <button type="button" class="operator" id="+">+</button>
+        <button type="button" class="number row-start-2" id="1" onclick="displayButtonInfo(1)">1</button>
+        <button type="button" class="number" id="2" onclick="displayButtonInfo(2)">2</button>
+        <button type="button" class="number" id="3" onclick="displayButtonInfo(3)">3</button>
+        <button type="button" id="+" onclick="displayButtonInfo('+')">+</button>
 
-        <button type="button"></button>
-        <button type="button" id="+-">&plusmn</button>
-        <button type="button" id="0">0</button>
-        <button type="button" class="decimal" id=".">.</button>
-        <button type="button" id="=">=</button>
+        <button type="button" class="row-start-2" id="+-" onclick="displayButtonInfo('+-')">&plusmn;</button>
+        <button type="button" class="number" id="0" onclick="displayButtonInfo(0)">0</button>
+        <button type="button" class="number" id="." onclick="displayButtonInfo('.')">.</button>
+        <button type="button" id="=" onclick="displayButtonInfo('=')">=</button>
     </div>
 </div>
 </body>
