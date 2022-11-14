@@ -14,7 +14,7 @@
   text-shadow: 0 1px rgba(255, 255, 255, 0.4);
   background-color: black;
 }
-.dark-mode button:hover:not(.all-clear, .number) {
+.dark-mode button:hover:not(.all-clear, .number), .dark-mode button:active:not(.all-clear, .number) {
   background-color: #333333;
 }
 
@@ -40,7 +40,7 @@ html {
 
 .calculator-screen {
   width: 100%;
-  font-size: 5rem;
+  font-size: 4rem;
   height: 11.25vh;
   border: none;
   background-color: #252525;
@@ -66,8 +66,9 @@ button {
   text-shadow: 0 1px rgba(255, 255, 255, 0.4);
 }
 
-button:hover {
+button:hover, button:active {
   background-color: #eaeaea;
+  cursor: pointer;
 }
 
 .all-clear {
@@ -77,7 +78,7 @@ button:hover {
   grid-column: 2/5;
   width: 100%;
 }
-.all-clear:hover {
+.all-clear:hover, .all-clear:active {
   background-color: #f17377;
 }
 
@@ -87,7 +88,7 @@ button:hover {
   color: #fff;
 }
 
-.number:hover {
+.number:hover, .number:active {
   background-color: #4e9ed4;
 }
 
