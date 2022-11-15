@@ -92,14 +92,6 @@ function clearLast() {
 
 updateDisplay();
 
-window.addEventListener('keydown', event => {
-
-    let elementExists = document.getElementById(event.key);
-    if (elementExists) {
-        elementExists.click();
-        // elementExists.();
-    }
-});
 
 const keys = document.querySelector('.calculator-keys');
 
@@ -134,4 +126,21 @@ keys.addEventListener('click', event => {
     }
 
     updateDisplay();
+});
+
+window.addEventListener('keydown', event => {
+    let elementExists = document.getElementById(event.key);
+    if (elementExists) {
+        elementExists.click();
+        // elementExists.style.boxShadow = 'none';
+        elementExists.classList.add('key-board-down');
+    }
+});
+
+window.addEventListener('keyup', event => {
+
+    let elementExists = document.getElementById(event.key);
+    if (elementExists) {
+        elementExists.classList.remove('key-board-down')
+    }
 });

@@ -4,36 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculator</title>
-    <link href="img/calculator.png" rel="icon" type="image/x-icon">
+    <link href="img/calculator-icon.png" rel="icon" type="image/x-icon">
     <link href="widescreen.css" rel="stylesheet">
     <!--    <link media="screen and (max-width: 600px)" href="smallscreen.css" rel="stylesheet">-->
 </head>
 <body>
 <div class="calculator">
     <div class="calculator-keys">
-        <button type="button" id="info" onclick="alert('Developer: Neta Kleman\nVersion: Calculator 1.0.0')"><img
+        <button type="button" id="info" title="information"
+                onclick="alert('Developer: Neta Kleman\nVersion: Calculator 1.0.0\n(try me with keyboard!)')"><img
                 src="img/information.png"></button>
         <h2>My Calculator</h2>
         <a href="config.html">
-            <button type="button" id="setting"><img src="img/setting.png"></button>
+            <button type="button" id="setting" title="style"><img src="img/setting.png"></button>
         </a>
 
-        <button type="button" id="theme" onclick="changeTheme()"><img src="img/light-bulb.png"></button>
+        <button type="button" id="theme" title="dark" onclick="changeTheme()"><img src="img/light-bulb.png">
+        </button>
         <input type="text" class="calculator-screen" value="" disabled/>
-        <button type="button" id="back"><img src="img/return.png"></button>
+        <button type="button" id="Backspace" title="delete"><img src="img/backspace.png"></button>
 
 
-        <button type="button" id="history" onclick="changeHistoryMode()"><img src="img/history.png"></button>
+        <button type="button" id="history" title="show history" onclick="changeHistoryMode()"><img
+                src="img/history.png">
+        </button>
         <button type="button" class="all-clear" id="all-clear">AC</button>
         <button type="button" class="operator" id="/">&divide;</button>
 
-        <button type="button" id="calcMode" onclick="changeCalcMode()"><img src=""></button>
+        <button type="button" id="calcMode" title="scientific" onclick="changeCalcMode()"><img src="img/scientific.png"
+                                                                                               id="calcModePic">
+        </button>
         <button type="button" class="number" id="7">7</button>
         <button type="button" class="number" id="8">8</button>
         <button type="button" class="number" id="9">9</button>
         <button type="button" class="operator" id="*">&times;</button>
 
-        <button type="button" id="location" onclick="changeLocationMode()"><img src=""></button>
+        <button type="button" id="location" title="remote" onclick="changeLocationMode()"><img src="img/remote.png">
+        </button>
         <button type="button" class="number" id="4">4</button>
         <button type="button" class="number" id="5">5</button>
         <button type="button" class="number" id="6">6</button>
