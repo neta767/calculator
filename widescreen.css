@@ -14,8 +14,12 @@
   text-shadow: 0 1px rgba(255, 255, 255, 0.4);
   background-color: black;
 }
-.dark-mode button:hover:not(.all-clear, .number), .dark-mode button:active:not(.all-clear, .number) {
+.dark-mode button:hover:not(.all-clear, .number) {
   background-color: #333333;
+}
+
+.toggle {
+  background-color: red;
 }
 
 html {
@@ -66,9 +70,13 @@ button {
   text-shadow: 0 1px rgba(255, 255, 255, 0.4);
 }
 
-button:hover, button:active {
+button:hover {
   background-color: #eaeaea;
   cursor: pointer;
+}
+
+button:active {
+  border: 2px solid darkblue;
 }
 
 .all-clear {
@@ -78,8 +86,11 @@ button:hover, button:active {
   grid-column: 2/5;
   width: 100%;
 }
-.all-clear:hover, .all-clear:active {
+.all-clear:hover {
   background-color: #f17377;
+}
+.all-clear:active {
+  border: 2px solid darkblue;
 }
 
 .number {
@@ -88,8 +99,12 @@ button:hover, button:active {
   color: #fff;
 }
 
-.number:hover, .number:active {
+.number:hover {
   background-color: #4e9ed4;
+}
+
+.number:active {
+  border: 2px solid darkblue;
 }
 
 h2 {

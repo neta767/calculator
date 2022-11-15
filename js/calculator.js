@@ -97,7 +97,7 @@ window.addEventListener('keydown', event => {
     let elementExists = document.getElementById(event.key);
     if (elementExists) {
         elementExists.click();
-        elementExists.focus();
+        // elementExists.();
     }
 });
 

@@ -9,7 +9,6 @@
   .calculator {
     background-color: black;
     border: 1px solid darkgray;
-
   }
 
   button:not(.all-clear,.number) {
@@ -18,9 +17,13 @@
     background-color: black;
   }
 
-  button:hover:not(.all-clear,.number), button:active:not(.all-clear,.number) {
+  button:hover:not(.all-clear,.number) {
     background-color: #333333;
   }
+}
+
+.toggle {
+  background-color: red;
 }
 
 html {
@@ -73,9 +76,13 @@ button {
   text-shadow: 0 1px rgba(255, 255, 255, .4);
 }
 
-button:hover, button:active {
+button:hover, {
   background-color: #eaeaea;
   cursor: pointer;
+}
+
+button:active {
+  border: 2px solid darkblue;
 }
 
 .all-clear {
@@ -85,8 +92,12 @@ button:hover, button:active {
   grid-column: 2/5;
   width: 100%;
 
-  &:hover, &:active {
+  &:hover {
     background-color: #f17377;
+  }
+
+  &:active {
+    border: 2px solid darkblue;
   }
 }
 
@@ -96,8 +107,12 @@ button:hover, button:active {
   color: #fff;
 }
 
-.number:hover, .number:active {
+.number:hover {
   background-color: #4e9ed4;
+}
+
+.number:active {
+  border: 2px solid darkblue;
 }
 
 h2 {
