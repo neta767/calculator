@@ -19,15 +19,15 @@
   button {
     text-shadow: none;
     box-shadow: 0 5px #3b3c40;
-  }
 
-  button:not(.all-clear,.number) {
-    color: #ffffff;
-    background-color: rgba(153, 153, 153, 0.5);
-  }
+    &:not(.all-clear,.number) {
+      color: #ffffff;
+      background-color: rgba(153, 153, 153, 0.5);
+    }
 
-  button:hover:not(.all-clear,.number) {
-    background-color: rgba(127, 127, 127, 0.5);
+    &:hover:not(.all-clear,.number) {
+      background-color: rgba(127, 127, 127, 0.5);
+    }
   }
 
   .number {
@@ -36,7 +36,7 @@
     box-shadow: 0 5px #272727;
 
     &:hover {
-      background-color: rgba(59, 60, 64, 0.53);
+      background-color: #494951;
     }
   }
 
@@ -53,7 +53,7 @@ html {
 
 .calculator {
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 15px;
   position: absolute;
   top: 50%;
   left: 50%;

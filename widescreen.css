@@ -30,7 +30,7 @@
   box-shadow: 0 5px #272727;
 }
 .dark-mode .number:hover {
-  background-color: rgba(59, 60, 64, 0.53);
+  background-color: #494951;
 }
 
 html {
@@ -44,7 +44,7 @@ html {
 
 .calculator {
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 15px;
   position: absolute;
   top: 50%;
   left: 50%;

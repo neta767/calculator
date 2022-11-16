@@ -75,7 +75,7 @@ function resetCalculator() {
 
 function updateDisplay() {
     const display = document.querySelector('.calculator-screen');
-    display.value = calculator.displayValue;
+    display.id = calculator.displayValue;
 }
 
 function clearLast() {
@@ -97,13 +97,13 @@ const keys = document.querySelector('.calculator-keys');
 
 keys.addEventListener('click', event => {
     const {target} = event;
-    const {id} = target;
+    let {id} = target;
     if (!target.matches('button')) {
         return;
     }
-
+    id = id.slice(1)
     switch (id) {
-        case 'back':
+        case 'Backspace':
             clearLast();
             break;
         case '+':
@@ -129,7 +129,7 @@ keys.addEventListener('click', event => {
 });
 
 window.addEventListener('keydown', event => {
-    let elementExists = document.getElementById(event.key);
+    let elementExists = document.getElementById('a' + event.key);
     if (elementExists) {
         elementExists.click();
         // elementExists.style.boxShadow = 'none';
@@ -139,7 +139,7 @@ window.addEventListener('keydown', event => {
 
 window.addEventListener('keyup', event => {
 
-    let elementExists = document.getElementById(event.key);
+    let elementExists = document.getElementById('a' + event.key);
     if (elementExists) {
         elementExists.classList.remove('key-board-down')
     }

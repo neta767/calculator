@@ -1,16 +1,19 @@
 {
   "name": "calculator",
   "version": "1.0.0",
-  "devDependencies": {
-    "http-server": "14.1.1"
-  },
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "sass js/widescreen.scss widescreen/scc",
+    "dev": "http-server & sass js/widescreen.scss widescreen/scc --watch",
     "start": "http-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "sass": "^1.56.1"
+  }
 }
