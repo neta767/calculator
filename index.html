@@ -2,59 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculator</title>
     <link href="img/calculator-icon.png" rel="icon" type="image/x-icon">
     <link href="widescreen.css" rel="stylesheet">
-    <!--    <link media="screen and (max-width: 600px)" href="smallscreen.css" rel="stylesheet">-->
 </head>
 <body>
 <div class="calculator">
     <div class="calculator-keys">
-        <button type="button" id="info" title="information"
+        <button title="information"
                 onclick="alert('Developer: Neta Kleman\nVersion: Calculator 1.0.0\n(try me with keyboard!)')"><img
                 src="img/information.png"></button>
         <h2>My Calculator</h2>
         <a href="config.html">
-            <button type="button" id="setting" title="style"><img src="img/setting.png"></button>
+            <button title="style"><img src="img/setting.png"></button>
         </a>
 
-        <button type="button" id="theme" title="dark" onclick="changeTheme()"><img src="img/light-bulb.png">
-        </button>
-        <input type="text" class="calculator-screen" value="" disabled/>
-        <button type="button" id="Backspace" title="delete"><img src="img/backspace.png"></button>
+        <button id="theme" title="dark" onclick="changeTheme()"><img src="img/light-bulb.png"></button>
+        <input type="text" class="calculator-screen" disabled/>
+        <button title="delete" onclick="backSpace()"><img src="img/backspace.png"></button>
 
 
-        <button type="button" id="history" title="show history" onclick="changeHistoryMode()"><img
-                src="img/history.png">
-        </button>
-        <button type="button" class="all-clear" id="all-clear">AC</button>
-        <button type="button" class="operator" id="a/">&divide;</button>
+        <button id="history" title="show history" onclick="changeHistoryMode()"><img src="img/history.png"></button>
+        <button class="all-clear operator" id="all-clear">AC</button>
+        <button class="operator" id="divide">&divide;</button>
 
-        <button type="button" id="calcMode" title="scientific" onclick="changeCalcMode()"><img src="img/scientific.png"
-                                                                                               id="calcModePic">
-        </button>
-        <button type="button" class="number" id="a7">7</button>
-        <button type="button" class="number" id="a8">8</button>
-        <button type="button" class="number" id="a9">9</button>
-        <button type="button" class="operator" id="a*">&times;</button>
+        <button id="calcMode" title="scientific" onclick="changeCalcMode()"><img src="img/scientific.png"></button>
+        <button class="number" id="num-7">7</button>
+        <button class="number" id="num-8">8</button>
+        <button class="number" id="num-9">9</button>
+        <button class="operator" id="times">&times;</button>
 
-        <button type="button" id="location" title="remote" onclick="changeLocationMode()"><img src="img/remote.png">
-        </button>
-        <button type="button" class="number" id="a4">4</button>
-        <button type="button" class="number" id="a5">5</button>
-        <button type="button" class="number" id="a6">6</button>
-        <button type="button" class="operator" id="a-">-</button>
+        <button id="location" title="remote" onclick="changeLocationMode()"><img src="img/remote.png"></button>
+        <button class="number" id="num-4">4</button>
+        <button class="number" id="num-5">5</button>
+        <button class="number" id="num-6">6</button>
+        <button class="operator" id="sub">-</button>
 
-        <button type="button" class="number row-start-2" id="a1">1</button>
-        <button type="button" class="number" id="a2">2</button>
-        <button type="button" class="number" id="a3">3</button>
-        <button type="button" class="operator" id="a+">+</button>
+        <button class="number row-start-2" id="a1">1</button>
+        <button class="number" id="a2">2</button>
+        <button class="number" id="a3">3</button>
+        <button class="operator" id="add">+</button>
 
-        <button type="button" class="row-start-2" id="a+-">&plusmn;</button>
-        <button type="button" class="number" id="a0">0</button>
-        <button type="button" class="number decimal" id="a.">.</button>
-        <button type="button" class="operator" id="a=">=</button>
+        <button class="row-start-2 operator" id="plus–minus">&plusmn;</button>
+        <button class="number" id="num-0">0</button>
+        <button class="number decimal" id="dot">.</button>
+        <button class="operator" id="equal">=</button>
     </div>
 </div>
 <script src="js/application.js"></script>

@@ -1,146 +1,68 @@
-const calculator = {
-    displayValue: '0',
-    firstOperand: null,
-    waitingForSecondOperand: false,
-    operator: null,
-    lastInput: null
-};
+const buttons = document.querySelectorAll('.number, .operator');
+const output = document.querySelector('input');
+let input = '';
 
-function inputDigit(digit) {
-    if (calculator.waitingForSecondOperand === true) {
-        calculator.displayValue = digit;
-        calculator.waitingForSecondOperand = false;
-    } else {
-        calculator.displayValue =
-            calculator.displayValue === '0' ? digit : calculator.displayValue + digit;
-    }
-}
+window.addEventListener("load", (event) => {
+    output.value = '';
+});
 
-function inputDecimal(dot) {
-    if (calculator.waitingForSecondOperand === true) {
-        calculator.displayValue = '0.';
-        calculator.waitingForSecondOperand = false;
-        return;
-    }
-
-    if (!calculator.displayValue.includes(dot)) {
-        calculator.displayValue += dot;
-    }
-}
-
-function handleOperator(nextOperator) {
-    calculator.lastInput = 'operator'
-    const {firstOperand, displayValue, operator} = calculator;
-    const inputValue = parseFloat(displayValue);
-
-    if (firstOperand == null) {
-        calculator.firstOperand = inputValue;
-    } else if (operator) {
-        const currentValue = firstOperand || 0;
-        const result = parseFloat(calculate(currentValue, inputValue, operator).toFixed(7));
-
-        calculator.displayValue = calculator.firstOperand = result;
-    }
-
-    calculator.waitingForSecondOperand = true;
-    calculator.operator = nextOperator;
-}
-
-function calculate(firstOperand, secondOperand, operator) {
-    if (operator === '+') {
-        return firstOperand + secondOperand;
-    } else if (operator === '-') {
-        return firstOperand - secondOperand;
-    } else if (operator === '*') {
-        return firstOperand * secondOperand;
-    } else if (operator === '/') {
-        if (secondOperand === 0) {
-            alert('undefined')
-            clearLast();
-            return;
-        }
-        return firstOperand / secondOperand;
-    }
-
-    return secondOperand;
-}
-
-function resetCalculator() {
-    calculator.displayValue = '0';
-    calculator.firstOperand = null;
-    calculator.waitingForSecondOperand = false;
-    calculator.operator = null;
-    calculator.lastInput = null;
-}
-
-function updateDisplay() {
-    const display = document.querySelector('.calculator-screen');
-    display.id = calculator.displayValue;
-}
-
-function clearLast() {
-    if (calculator.lastInput === 'operator') {
-        calculator.operator = null
-    }
-    calculator.lastInput = null;
-    // if (calculator.firstOperand === null) {
-    //     calculator.displayValue = '0'
-    // } else {
-    //     calculator.displayValue = calculator.firstOperand
-    // }
-}
-
-updateDisplay();
-
-
-const keys = document.querySelector('.calculator-keys');
-
-keys.addEventListener('click', event => {
-    const {target} = event;
-    let {id} = target;
-    if (!target.matches('button')) {
-        return;
-    }
-    id = id.slice(1)
-    switch (id) {
-        case 'Backspace':
-            clearLast();
-            break;
-        case '+':
-        case '-':
-        case '*':
-        case '/':
+function calc(char) {
+    switch (char) {
         case '=':
-            handleOperator(id);
+            output.value = eval(input);
             break;
-        case '.':
-            inputDecimal(id);
+        case 'AC':
+            input = output.value = '';
             break;
-        case 'all-clear':
-            resetCalculator();
+        case '÷':
+            input += '/';
+            break;
+        case '×':
+            input += '*';
             break;
         default:
-            if (Number.isInteger(parseFloat(id))) {
-                inputDigit(id);
+            if (Number.isInteger(Number(char)) || '') {
+                if (char === '0' && input.slice(-1) === '/') {
+                    alert('undefined')
+                } else {
+                    input += char;
+                    output.value = eval(input);
+                }
+            } else {
+                input += char;
             }
     }
+}
 
-    updateDisplay();
-});
+for (let button of buttons) {
+    const char = button.innerHTML;
 
-window.addEventListener('keydown', event => {
-    let elementExists = document.getElementById('a' + event.key);
-    if (elementExists) {
-        elementExists.click();
-        // elementExists.style.boxShadow = 'none';
-        elementExists.classList.add('key-board-down');
+    button.addEventListener('pointerdown', () => {
+        calc(char);
+    });
+}
+document.addEventListener('keydown', event => {
+    for (let button of buttons) {
+        if (button.innerHTML === event.key) {
+            button.classList.add('key-board-down');
+            calc(event.key)
+        }
     }
 });
 
-window.addEventListener('keyup', event => {
-
-    let elementExists = document.getElementById('a' + event.key);
-    if (elementExists) {
-        elementExists.classList.remove('key-board-down')
+document.addEventListener('keyup', event => {
+    for (let button of buttons) {
+        if (button.innerHTML === event.key) {
+            button.classList.remove('key-board-down');
+        }
     }
 });
+
+function backSpace() {
+    if (input.length > 1) {
+        const newLastChar = input.slice(-2, -1)
+        input = input.slice(0, input.length - 2);
+        console.log(input, newLastChar);
+        calc(newLastChar)
+    }
+}

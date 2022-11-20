@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "sass js/widescreen.scss widescreen/scc",
-    "dev": "http-server & sass js/widescreen.scss widescreen/scc --watch",
+    "build": "sass widescreen.scss widescreen.css",
+    "dev": "http-server & sass widescreen.scss widescreen.css --watch",
     "start": "http-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
