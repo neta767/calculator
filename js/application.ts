@@ -2,33 +2,35 @@ let darkTheme = false;
 let displayHistory = true;
 let scientificMode = true;
 let remoteLocation = false;
-function changeTheme() {
+
+function changeTheme(): void {
     const element = document.getElementById('theme');
     darkTheme = !darkTheme;
     document.body.classList.toggle("dark-mode");
     if (darkTheme === true) {
         element.title = 'light';
-    }
-    else {
+    } else {
         element.title = 'dark';
     }
 }
-function changeToggle(element) {
+
+function changeToggle(element): void {
     element.classList.toggle("change-toggle");
 }
-function changeHistoryMode() {
+
+function changeHistoryMode(): void {
     document.body.classList.toggle('hide-history');
     const element = document.getElementById('history');
     displayHistory = !displayHistory;
     if (displayHistory === true) {
         element.title = 'hide history';
-    }
-    else {
+    } else {
         element.title = 'show history';
     }
-    changeToggle(element);
+    changeToggle(element)
 }
-function changeCalcMode() {
+
+function changeCalcMode(): void {
     document.body.classList.toggle('hide-scientific');
     const elementPic = document.getElementById('calcModePic');
     const elementButton = document.getElementById('calcMode');
@@ -36,21 +38,19 @@ function changeCalcMode() {
     if (scientificMode === true) {
         elementPic.setAttribute('src', 'img/calculator.png');
         elementButton.title = 'standard';
-    }
-    else {
+    } else {
         elementPic.setAttribute('src', 'img/scientific.png');
         elementButton.title = 'scientific';
     }
 }
-function changeLocationMode() {
+
+function changeLocationMode(): void {
     const element = document.getElementById('location');
     remoteLocation = !remoteLocation;
     if (remoteLocation === true) {
         element.title = 'locally';
-    }
-    else {
+    } else {
         element.title = 'remote';
     }
-    changeToggle(element);
+    changeToggle(element)
 }
-//# sourceMappingURL=application.js.map

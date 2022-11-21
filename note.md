@@ -1,6 +1,5 @@
 * documentation
-* back
-* dark theme on config-change palette
+* part 2!
 
 ### problem:
 

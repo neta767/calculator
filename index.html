@@ -5,16 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculator</title>
     <link href="img/calculator-icon.png" rel="icon" type="image/x-icon">
-    <link href="calculator-style.css" rel="stylesheet">
+    <link href="css/calculator-style.css" rel="stylesheet">
 </head>
 <body>
 <div class="calculator">
+    <div class="history">
+        <div>
+            <img src="img/history.png">
+            <h2>Operation log</h2>
+        </div>
+        <input type="text" class="log" disabled/>
+    </div>
     <div class="calculator-keys">
         <button title="information"
                 onclick="alert('Developer: Neta Kleman\nVersion: Calculator 1.0.0\n(try me with keyboard!)')"><img
                 src="img/information.png"></button>
         <h2>My Calculator</h2>
-        <a href="config.html">
+        <a href="html/config.html">
             <button title="style"><img src="img/setting.png"></button>
         </a>
 
@@ -23,16 +30,17 @@
         <button title="delete" onclick="backSpace()"><img src="img/backspace.png"></button>
 
 
-        <button id="history" title="show history" onclick="changeHistoryMode()"><img src="img/history.png"></button>
+        <button id="history" title="hide history" onclick="changeHistoryMode()" class="change-toggle"><img
+                src="img/history.png"></button>
         <button class="all-clear operator" id="all-clear">AC</button>
-        <button class="operator" id="divide">&divide;</button>
+        <button class="operator" id="divide">÷</button>
 
-        <button id="calcMode" title="scientific" onclick="changeCalcMode()"><img src="img/scientific.png"
-                                                                                 id="calcModePic"></button>
+        <button id="calcMode" title="standard" onclick="changeCalcMode()"><img src="img/calculator.png"
+                                                                               id="calcModePic"></button>
         <button class="number" id="num-7">7</button>
         <button class="number" id="num-8">8</button>
         <button class="number" id="num-9">9</button>
-        <button class="operator" id="times">&times;</button>
+        <button class="operator" id="times">×</button>
 
         <button id="location" title="remote" onclick="changeLocationMode()"><img src="img/remote.png"></button>
         <button class="number" id="num-4">4</button>
@@ -45,10 +53,28 @@
         <button class="number" id="a3">3</button>
         <button class="operator" id="add">+</button>
 
-        <button class="row-start-2 operator" id="plus–minus">&plusmn;</button>
+        <button class="row-start-2 operator" id="plus–minus">±</button>
         <button class="number" id="num-0">0</button>
-        <button class="number decimal" id="dot">.</button>
+        <button class="number" id="dot">.</button>
         <button class="operator" id="equal">=</button>
+    </div>
+    <div class="scientific">
+        <div>
+            <img src="img/scientific.png"/>
+            <h2>Scientific</h2>
+        </div>
+        <div class="scientific-keys">
+            <button>%</button>
+            <button><img src="img/pi.png"></button>
+            <button><img src="img/squared.png"></button>
+
+            <button><img src="img/power.png"></button>
+            <button><img src="img/square-root.png"></button>
+
+            <button><img src="img/nth-root.png"></button>
+            <button style="font-size: 3vh">Base₂</button>
+            <button>!</button>
+        </div>
     </div>
 </div>
 <script src="js/application.js"></script>

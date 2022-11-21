@@ -7,27 +7,30 @@ let secondOperand = '';
 let operator = '';
 let waitingForSecondOperand = false;
 let strInput = '';
+
 document.addEventListener("DOMContentLoaded", () => {
     reset();
 });
+
 // function scientificEval(char) {
 // }
-function isOperator(char) {
+
+function isOperator(char: string): boolean {
     return char == '+' || char == '-' || char == '×' || char == '÷';
 }
-function reset() {
+
+function reset(): void {
     log.value = strInput = currentValue = firstOperand = secondOperand = operator = input.value = '';
 }
+
 //assuming correct input
-function standardEval(char) {
+function standardEval(char: string): void {
     if (char == '=') {
         input.value = eval(firstOperand + operator + secondOperand);
-    }
-    else if (char == 'AC') {
+    } else if (char == 'AC') {
         reset();
         waitingForSecondOperand = false;
-    }
-    else if (isOperator(char)) {
+    } else if (isOperator(char)) {
         if (waitingForSecondOperand) {
             firstOperand = currentValue;
         }
@@ -35,31 +38,29 @@ function standardEval(char) {
         log.value = strInput;
         if (char == '÷') {
             operator = '/';
-        }
-        else if (char == '×') {
+        } else if (char == '×') {
             operator = '*';
-        }
-        else {
+        } else {
             operator = char;
         }
         secondOperand = '';
         waitingForSecondOperand = true;
-    }
-    else if (!Number.isNaN(parseFloat(char)) || '.') {
+    } else if (!Number.isNaN(parseFloat(char)) || '.') {
         strInput += char;
         log.value = strInput;
         if (waitingForSecondOperand) {
-            secondOperand += char;
+            secondOperand += char
             console.log(firstOperand + operator + secondOperand);
             input.value = currentValue = eval(firstOperand + operator + secondOperand);
-        }
-        else {
+        } else {
             firstOperand += char;
         }
     }
 }
+
 for (let button of buttons) {
     const char = button.innerHTML;
+
     button.addEventListener('pointerdown', () => {
         standardEval(char);
     });
@@ -68,10 +69,11 @@ document.addEventListener('keydown', event => {
     for (let button of buttons) {
         if (button.innerHTML === event.key) {
             button.classList.add('key-board-down');
-            standardEval(event.key);
+            standardEval(event.key)
         }
     }
 });
+
 document.addEventListener('keyup', event => {
     for (let button of buttons) {
         if (button.innerHTML === event.key) {
@@ -79,6 +81,7 @@ document.addEventListener('keyup', event => {
         }
     }
 });
+
 // function backSpace() {
 //     if (strInput.length > 1) {
 //         const newLastChar = strInput.slice(-2, -1)
@@ -87,4 +90,3 @@ document.addEventListener('keyup', event => {
 //         standardEval(newLastChar)
 //     }
 // }
-//# sourceMappingURL=calculator.js.map
