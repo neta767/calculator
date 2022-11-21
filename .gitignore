@@ -3,6 +3,7 @@
 *.css.map
 *.js
 *.js.map
+note.md
 
 # compiled output
 /dist

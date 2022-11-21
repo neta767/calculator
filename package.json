@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "http-server",
+    "build-js": "tsc",
+    "build-css1": "sass scss/calculator-style.scss csss/calculator-style.css sass scss/config-style.scss scss/config-style.css",
+    "build-css2": "sass scss/config-style.scss scss/config-style.css",
+    "start": "build-js & build-css1 & build-css2 & http-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
