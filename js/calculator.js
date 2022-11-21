@@ -2,7 +2,7 @@ const buttons = document.querySelectorAll('.number, .operator');
 const output = document.querySelector('input');
 let input = '';
 
-window.addEventListener("load", (event) => {
+document.addEventListener("DOMContentLoaded", (event) => {
     output.value = '';
 });
 

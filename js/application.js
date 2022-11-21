@@ -14,25 +14,8 @@ function changeTheme() {
     }
 }
 
-//not perfect-maybe to use toggle
-function changeToggle(element, toggle) {
-    if (toggle === true) {
-        element.style.boxShadow = 'none';
-        element.style.transform = 'translateY(5px)';
-        if (darkTheme === true) {
-            element.style.backgroundColor = 'rgba(127, 127, 127, 0.5)';
-        } else {
-            element.style.backgroundColor = 'rgba(173, 216, 230, 0.52)';
-        }
-    } else {
-        element.style.backgroundColor = '';
-        if (darkTheme === true) {
-            element.style.boxShadow = '0 5px #3b3c40';
-        } else {
-            element.style.boxShadow = '0 5px rgba(153, 153, 153, 0.5)';
-        }
-        element.style.transform = '';
-    }
+function changeToggle(element) {
+    element.classList.toggle("change-toggle");
 }
 
 function changeHistoryMode() {
@@ -43,7 +26,7 @@ function changeHistoryMode() {
     } else {
         element.title = 'show history';
     }
-    changeToggle(element, displayHistory)
+    changeToggle(element)
 }
 
 function changeCalcMode() {
@@ -67,5 +50,5 @@ function changeLocationMode() {
     } else {
         element.title = 'remote';
     }
-    changeToggle(element, remoteLocation)
+    changeToggle(element)
 }

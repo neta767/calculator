@@ -1,0 +1,31 @@
+@use "sass:map";
+@import "colors";
+
+$theme-color: $light-theme;
+
+* {
+  font-family: Verdana, "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+body {
+  background-color: map.get($theme-color, 'c1');
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+fieldset {
+  border: none;
+  border-radius: 5px;
+  background-color: #f2f2f2;
+}
+
+label {
+}
+
+button {
+}

@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculator</title>
     <link href="img/calculator-icon.png" rel="icon" type="image/x-icon">
-    <link href="widescreen.css" rel="stylesheet">
+    <link href="calculator-style.css" rel="stylesheet">
 </head>
 <body>
 <div class="calculator">
@@ -26,7 +27,8 @@
         <button class="all-clear operator" id="all-clear">AC</button>
         <button class="operator" id="divide">&divide;</button>
 
-        <button id="calcMode" title="scientific" onclick="changeCalcMode()"><img src="img/scientific.png"></button>
+        <button id="calcMode" title="scientific" onclick="changeCalcMode()"><img src="img/scientific.png"
+                                                                                 id="calcModePic"></button>
         <button class="number" id="num-7">7</button>
         <button class="number" id="num-8">8</button>
         <button class="number" id="num-9">9</button>
