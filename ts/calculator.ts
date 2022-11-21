@@ -1,6 +1,6 @@
 const buttons = document.querySelectorAll('.number, .operator');
-const input = document.querySelectorAll('input')[1];
-const log = document.querySelectorAll('input')[0];
+const input = document.querySelector('input');
+const log = document.querySelector('textarea');
 let currentValue = '';
 let firstOperand = '';
 let secondOperand = '';
@@ -12,8 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
     reset();
 });
 
-// function scientificEval(char) {
-// }
 
 function isOperator(char: string): boolean {
     return char == '+' || char == '-' || char == '×' || char == '÷';
@@ -22,6 +20,9 @@ function isOperator(char: string): boolean {
 function reset(): void {
     log.value = strInput = currentValue = firstOperand = secondOperand = operator = input.value = '';
 }
+
+// function scientificEval(char) {
+// }
 
 //assuming correct input
 function standardEval(char: string): void {
@@ -32,7 +33,10 @@ function standardEval(char: string): void {
         waitingForSecondOperand = false;
     } else if (isOperator(char)) {
         if (waitingForSecondOperand) {
-            firstOperand = currentValue;
+            firstOperand = currentValue || firstOperand;
+        }
+        if (isOperator(strInput.slice(-1))) {
+            strInput = strInput.slice(0, -1);
         }
         strInput += char;
         log.value = strInput;
@@ -50,7 +54,7 @@ function standardEval(char: string): void {
         log.value = strInput;
         if (waitingForSecondOperand) {
             secondOperand += char
-            console.log(firstOperand + operator + secondOperand);
+            // console.log(firstOperand + operator + secondOperand);
             input.value = currentValue = eval(firstOperand + operator + secondOperand);
         } else {
             firstOperand += char;
@@ -58,18 +62,26 @@ function standardEval(char: string): void {
     }
 }
 
+function myEval(char) {
+    if (scientificMode) {
+
+    } else {
+        standardEval(char)
+    }
+}
+
 for (let button of buttons) {
     const char = button.innerHTML;
 
     button.addEventListener('pointerdown', () => {
-        standardEval(char);
+        myEval(char);
     });
 }
 document.addEventListener('keydown', event => {
     for (let button of buttons) {
         if (button.innerHTML === event.key) {
             button.classList.add('key-board-down');
-            standardEval(event.key)
+            myEval(event.key)
         }
     }
 });
@@ -82,11 +94,11 @@ document.addEventListener('keyup', event => {
     }
 });
 
-// function backSpace() {
-//     if (strInput.length > 1) {
-//         const newLastChar = strInput.slice(-2, -1)
-//         strInput = strInput.slice(0, strInput.length - 2);
-//         console.log(strInput, newLastChar);
-//         standardEval(newLastChar)
-//     }
-// }
+function backSpace(): void {
+    const newStrInput = strInput.slice(0, strInput.length - 1);
+    console.log(newStrInput)
+    reset();
+    for (const char of newStrInput) {
+        standardEval(char);
+    }
+}
