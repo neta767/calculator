@@ -21,8 +21,35 @@ function reset(): void {
     log.value = strInput = currentValue = firstOperand = secondOperand = operator = input.value = '';
 }
 
-// function scientificEval(char) {
-// }
+function scientificEval(char): void {
+    switch (char) {
+        case '=':
+            input.value = eval(strInput);
+            break;
+        case 'AC':
+            strInput = input.value = '';
+            break;
+        case '÷':
+            strInput += '/';
+            break;
+        case '×':
+            strInput += '*';
+            break;
+        default:
+            // if (Number.isInteger(Number(char)) || '') {
+            if (!Number.isNaN(parseFloat(char)) || '.') {
+                // if (char === '0' && strInput.slice(-1) === '/') {
+                //     alert('undefined')
+                // } else {
+                strInput += char;
+                input.value = eval(strInput);
+                // }
+            } else {
+                strInput += char;
+            }
+    }
+    log.value = strInput
+}
 
 //assuming correct input
 function standardEval(char: string): void {
@@ -62,9 +89,9 @@ function standardEval(char: string): void {
     }
 }
 
-function myEval(char) {
+function myEval(char): void {
     if (scientificMode) {
-
+        scientificEval(char)
     } else {
         standardEval(char)
     }
@@ -99,6 +126,6 @@ function backSpace(): void {
     console.log(newStrInput)
     reset();
     for (const char of newStrInput) {
-        standardEval(char);
+        myEval(char);
     }
 }

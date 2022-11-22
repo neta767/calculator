@@ -1,17 +1,39 @@
-let darkTheme = false;
 let displayHistory = true;
 let scientificMode = true;
 let remoteLocation = false;
+const fonts = document.querySelectorAll('option');
+let theme = 'light';
+let color: string;
+let font: string;
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const queryString = window.location.search;
+    if (queryString != '') {
+        const urlParams = new URLSearchParams(queryString);
+        console.log(urlParams);
+        color = urlParams.get('color');
+        font = urlParams.get('font');
+        theme = urlParams.get('theme');
+        console.log(color, font, theme);
+        document.body.style.backgroundColor = color;
+        document.body.style.fontFamily = font;
+        if (theme == 'dark') {
+            document.body.classList.add("dark-mode")
+        } else {
+            document.body.classList.remove("dark-mode")
+
+        }
+    }
+    if (fonts != null) {
+        for (const font of fonts) {
+            font.style.fontFamily = font.value.toLowerCase();
+        }
+    }
+});
 
 function changeTheme(): void {
-    const element = document.getElementById('theme');
-    darkTheme = !darkTheme;
-    document.body.classList.toggle("dark-mode");
-    if (darkTheme === true) {
-        element.title = 'light';
-    } else {
-        element.title = 'dark';
-    }
+    // document.body.classList.toggle("dark-mode");
 }
 
 function changeToggle(element): void {
@@ -31,6 +53,7 @@ function changeHistoryMode(): void {
 }
 
 function changeCalcMode(): void {
+    // reset();
     document.body.classList.toggle('hide-scientific');
     const elementPic = document.getElementById('calcModePic');
     const elementButton = document.getElementById('calcMode');

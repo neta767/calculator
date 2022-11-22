@@ -63,7 +63,7 @@ $theme-color: $light-theme;
 }
 
 * {
-  font-family: Verdana, "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+  //font-family: Verdana, "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
   font-weight: map.get($theme-color, 'font-weight');
   color: map.get($theme-color, 'c10');
   margin: 0;
@@ -81,6 +81,7 @@ body {
 
 
 .calculator {
+  overflow: auto;
   border: 1px solid map.get($theme-color, 'c2');
   border-radius: 15px;
   width: min-content;
@@ -123,7 +124,7 @@ button {
 
   &:not(.number, .all-clear) {
     background-color: map.get($theme-color, 'c7');
-    color: map.get($theme-color, 'c3');
+    color: map.get($theme-color, 'c3')
   }
 
   &.all-clear {

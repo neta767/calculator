@@ -8,46 +8,41 @@
     <link href="../scss/config-style.css" rel="stylesheet">
 </head>
 <body>
-<form>
+<a href="../index.html">
+    <button class="back"><img src="../img/return.png"></button>
+</a>
+<form action="../index.html" method="get">
     <fieldset>
-        <legend><h2>Config:</h2></legend>
-        <div>
-            <label for="favcolor">Select your favorite color: </label>
-            <select name="favcolor" id="favcolor_selector">
-                <option value="Red">Red</option>
-                <option value="Blue">Blue</option>
-                <option value="Yellow">Yellow</option>
-                <option value="Pink">Pink</option>
-                <option value="Green">Green</option>
-                <option value="Purple">Purple</option>
-            </select>
-        </div>
-        <input type="color" id="favcolor" name="favcolor" value="#ff0000"><br><br>
+        <legend><h2>Configuration:</h2></legend>
+        <label for="color">Select background color: </label>
+        <input type="color" id="color" name="color" value="#ffffff"><br><br>
+        <hr>
+        <br>
 
-        <div>
-            <label for="favfont">Select your favorite font: </label>
-            <select name="favfont" id="favfont">
-                <option value="Serif">Serif</option>
-                <option value="Sans-serif">Sans-serif</option>
-                <option value="Monospace">Monospace</option>
-                <option value="Cursive">Cursive</option>
-                <option value="Fantasy">Fantasy</option>
-            </select>
-        </div>
-        <label>Select theme: </label>
+        <label for="font">Select font text: </label>
+        <select id="font" name="font">
+            <option value="sans-serif">Sans-serif</option>
+            <option value="serif">Serif</option>
+            <option value="monospace">Monospace</option>
+            <option value="cursive">Cursive</option>
+            <option value="fantasy">Fantasy</option>
+        </select>
+        <br>
+        <br>
+        <hr>
+        <br>
         <div class="theme">
-            <div>
-                <input type="radio" id="dark" name="theme">
-                <label for="dark">dark</label>
-            </div>
-            <div>
-                <input type="radio" id="light" name="theme">
-                <label for="light">light</label>
-            </div>
+            <label>Select theme: </label>
+            <input type="radio" id="light" value="light" name="theme" checked>
+            <label for="light">light</label>
+            <input type="radio" id="dark" value="dark" name="theme">
+            <label for="dark">dark</label>
         </div>
+        <br>
+        <button type="submit" value="Submit">Submit</button>
+        <button type="reset" value="Reset">Reset</button>
     </fieldset>
-    <button type="submit" value="Submit">Submit</button>
-    <button type="reset" value="Reset">Reset</button>
 </form>
+<script src="../ts/application.js"></script>
 </body>
 </html>

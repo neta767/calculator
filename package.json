@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build-js": "tsc",
-    "build-css1": "sass scss/calculator-style.scss csss/calculator-style.css",
+    "build-js1": "tsc ts/application.ts",
+    "build-js2": "tsc ts/calculator.ts",
+    "build-css1": "sass scss/calculator-style.scss scss/calculator-style.css",
     "build-css2": "sass scss/config-style.scss scss/config-style.css",
-    "start": "npm run build-js & npm run build-css1 & npm run build-css2 & http-server",
+    "start": "npm run build-js1 && npm run build-js2 && npm run build-css1 && npm run build-css2 && http-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
