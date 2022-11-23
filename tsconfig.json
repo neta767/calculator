@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
     "sourceMap": true,
-    "target": "ES2020",
+    "target": "ES2015",
     "lib": [
       "DOM",
       "ES2021"
     ],
-    "watch": true
+    "watch": true,
+    "module": "ES6"
   }
 }

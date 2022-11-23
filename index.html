@@ -22,28 +22,28 @@
             <img src="img/information.png">
         </button>
         <h2>My Calculator</h2>
-        <a href="html/config.html">
+        <a href="./html/config.html">
             <button title="style"><img src="img/setting.png"></button>
         </a>
 
-        <button id="light" title="light on" onclick="changeLight()"><img src="img/light-bulb.png"></button>
+        <button id="light" title="light on"><img src="img/light-bulb.png"></button>
         <input type="text" class="calculator-screen"/>
-        <button title="delete" onclick="backSpace()"><img src="img/backspace.png"></button>
+        <button id="backspace" title="delete"><img src="img/backspace.png"></button>
 
 
-        <button id="history" title="hide history" onclick="changeHistoryMode()" class="change-toggle"><img
+        <button id="history" title="hide history" class="change-toggle"><img
                 src="img/history.png"></button>
         <button class="all-clear operator" id="all-clear">AC</button>
         <button class="operator" id="divide">÷</button>
 
-        <button id="calcMode" title="standard" onclick="changeCalcMode()"><img src="img/calculator.png"
-                                                                               id="calcModePic"></button>
+        <button id="calcMode" title="standard"><img src="img/calculator.png"
+                                                    id="calcModePic"></button>
         <button class="number" id="num-7">7</button>
         <button class="number" id="num-8">8</button>
         <button class="number" id="num-9">9</button>
         <button class="operator" id="times">×</button>
 
-        <button id="location" title="remote" onclick="changeLocationMode()"><img src="img/remote.png"></button>
+        <button id="location" title="remote"><img src="img/remote.png"></button>
         <button class="number" id="num-4">4</button>
         <button class="number" id="num-5">5</button>
         <button class="number" id="num-6">6</button>
@@ -78,8 +78,8 @@
         </div>
     </div>
 </div>
-<script src="ts/application.js"></script>
-<script src="ts/calculator.js"></script>
-<script type="module" src="ts/Try.js"></script>
+<script>var exports = {};</script>
+<script src="ts/Application.js"></script>
+<script type="module" src="ts/Calculator.js"></script>
 </body>
 </html>

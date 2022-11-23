@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build-js1": "tsc ts/application.ts",
-    "build-js2": "tsc ts/calculator.ts",
+    "build-js1": "tsc ts/Application.ts  --target es2015",
+    "build-js2": "tsc ts/Calculator.ts  --target es2015",
     "build-css1": "sass scss/calculator-style.scss scss/calculator-style.css",
     "build-css2": "sass scss/config-style.scss scss/config-style.css",
     "start": "npm run build-js1 && npm run build-js2 && npm run build-css1 && npm run build-css2 && http-server",
