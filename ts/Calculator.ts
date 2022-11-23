@@ -21,12 +21,15 @@ export class Calculator {
     private static scientificEval(char): void {
         if (char == '=') {
             this.input.value = eval(this.strInput);
+            this.log.value = this.log.value + '\n= ' + this.input.value + '\n' + this.input.value;
+            this.log.rows += 2;
         } else if (char == 'AC') {
             this.reset();
             this.waitingForSecondOperand = false;
         } else if (this.isOperator(char)) {
             if (this.isOperator(this.strInput.slice(-1))) {
                 this.strInput = this.strInput.slice(0, -1);
+                this.log.value = this.log.value.slice(0, -1);
             }
             if (char == '÷') {
                 this.operator = '/';
@@ -36,14 +39,16 @@ export class Calculator {
                 this.operator = char;
             }
             this.strInput += this.operator;
+            this.log.value += this.operator;
             this.waitingForSecondOperand = true;
         } else if (!isNaN(Number(char)) || '.') {
             this.strInput += char;
+            this.log.value += char;
             if (this.waitingForSecondOperand) {
                 this.input.value = eval(this.strInput);
             }
         }
-        this.log.value = this.strInput
+        // this.log.value = this.strInput
     }
 
     private static standardEval(char: string): void {

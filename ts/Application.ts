@@ -15,7 +15,7 @@ class Application {
     private static font: string;
 
     static indexPageLoaded(): void {
-        // Calculator.reset();
+        Calculator.reset();
         const queryString = window.location.search;
         if (queryString != '') {
             const urlParams = new URLSearchParams(queryString);
@@ -69,7 +69,7 @@ class Application {
     }
 
     static changeCalcMode(): void {
-        // Calculator.reset();
+        Calculator.reset();
         document.body.classList.toggle('hide-scientific');
         const elementPic = document.getElementById('calcModePic');
         const elementButton = document.getElementById('calcMode');
@@ -112,6 +112,7 @@ input.addEventListener('pointerdown', () => {
 });
 
 input.oninput = function () {
+    console.log(1, input.value)
     let typedInput: string = input.value;
     if (Calculator.scientificMode) {
         if (sciCalcRegex.test(typedInput) == false) {
@@ -125,6 +126,13 @@ input.oninput = function () {
         }
     }
 };
+//not working!!
+// input.addEventListener('focusout', () => {
+//     const mathEqu = input.value;
+//     for (let i = 0; i < mathEqu.length; i++) {
+//         Calculator.myEval(mathEqu[i])
+//     }
+// });
 
 buttons.forEach(btn => {
     btn.addEventListener('pointerdown', () => {
