@@ -1,7 +1,7 @@
-const input = document.querySelector('input');
-const log = document.querySelector('textarea');
-
 export class Calculator {
+    static input = document.querySelector('input');
+    static log = document.querySelector('textarea');
+
     public static scientificMode = true;
     private static currentValue = '';
     private static firstOperand = '';
@@ -15,12 +15,12 @@ export class Calculator {
     }
 
     static reset(): void {
-        log.value = this.strInput = this.currentValue = this.firstOperand = this.secondOperand = this.operator = input.value = '';
+        this.log.value = this.strInput = this.currentValue = this.firstOperand = this.secondOperand = this.operator = this.input.value = '';
     }
 
     private static scientificEval(char): void {
         if (char == '=') {
-            input.value = eval(this.strInput);
+            this.input.value = eval(this.strInput);
         } else if (char == 'AC') {
             this.reset();
             this.waitingForSecondOperand = false;
@@ -40,15 +40,15 @@ export class Calculator {
         } else if (!isNaN(Number(char)) || '.') {
             this.strInput += char;
             if (this.waitingForSecondOperand) {
-                input.value = eval(this.strInput);
+                this.input.value = eval(this.strInput);
             }
         }
-        log.value = this.strInput
+        this.log.value = this.strInput
     }
 
     private static standardEval(char: string): void {
         if (char == '=') {
-            input.value = eval(this.firstOperand + this.operator + this.secondOperand);
+            this.input.value = eval(this.firstOperand + this.operator + this.secondOperand);
         } else if (char == 'AC') {
             this.reset();
             this.waitingForSecondOperand = false;
@@ -60,7 +60,7 @@ export class Calculator {
                 this.strInput = this.strInput.slice(0, -1);
             }
             this.strInput += char;
-            log.value = this.strInput;
+            this.log.value = this.strInput;
             if (char == '÷') {
                 this.operator = '/';
             } else if (char == '×') {
@@ -72,10 +72,10 @@ export class Calculator {
             this.waitingForSecondOperand = true;
         } else if (!isNaN(Number(char)) || '.') {
             this.strInput += char;
-            log.value = this.strInput;
+            this.log.value = this.strInput;
             if (this.waitingForSecondOperand) {
                 this.secondOperand += char;
-                input.value = this.currentValue = eval(this.firstOperand + this.operator + this.secondOperand);
+                this.input.value = this.currentValue = eval(this.firstOperand + this.operator + this.secondOperand);
             } else {
                 this.firstOperand += char;
             }
