@@ -3,6 +3,13 @@ import {Calculator} from "./Calculator.js";
 const fonts = document.querySelectorAll('option');
 const input = document.querySelector('input');
 const buttons = document.querySelectorAll('.number, .operator');
+const historyBtn = document.getElementById('history');
+const calcModeBtn = document.getElementById('calcMode');
+const locationModeBtn = document.getElementById('location');
+const lightBts = document.getElementById('light');
+const infoBtn = document.getElementById('info');
+const popup = document.getElementById("popup");
+const calculator = document.getElementsByClassName('calculator')[0];
 const standCalcRegex = new RegExp(/^(([0-9]+[-+/*]?)*(\d+\.\d*)?)*$/);
 const sciCalcRegex = new RegExp(/^(([0-9]+[-+/*%^]?)*(\d+\.\d*)?)*$/);
 
@@ -46,40 +53,37 @@ class Application {
 
     static changeLight(): void {
         document.body.classList.toggle("light-screen");
-        const element = document.getElementById('light');
         this.lightOn = !this.lightOn;
         if (this.lightOn === true) {
-            element.title = 'light off';
+            lightBts.title = 'light off';
         } else {
-            element.title = 'light on';
+            lightBts.title = 'light on';
         }
-        this.changeToggle(element)
+        this.changeToggle(lightBts)
     }
 
     static changeHistoryMode(): void {
         document.body.classList.toggle('hide-history');
-        const element = document.getElementById('history');
         this.displayHistory = !this.displayHistory;
         if (this.displayHistory === true) {
-            element.title = 'hide history';
+            historyBtn.title = 'hide history';
         } else {
-            element.title = 'show history';
+            historyBtn.title = 'show history';
         }
-        this.changeToggle(element)
+        this.changeToggle(historyBtn)
     }
 
     static changeCalcMode(): void {
         Calculator.reset();
         document.body.classList.toggle('hide-scientific');
         const elementPic = document.getElementById('calcModePic');
-        const elementButton = document.getElementById('calcMode');
         Calculator.scientificMode = !Calculator.scientificMode;
         if (Calculator.scientificMode === true) {
             elementPic.setAttribute('src', 'img/calculator.png');
-            elementButton.title = 'standard';
+            calcModeBtn.title = 'standard';
         } else {
             elementPic.setAttribute('src', 'img/scientific.png');
-            elementButton.title = 'scientific';
+            calcModeBtn.title = 'scientific';
         }
     }
 
@@ -98,10 +102,18 @@ class Application {
 document.addEventListener("DOMContentLoaded", () => {
     if (document.location.href.search('index.html') != -1) {
         Application.indexPageLoaded();
-        document.getElementById('history').addEventListener('click', () => Application.changeHistoryMode());
-        document.getElementById('calcMode').addEventListener('click', () => Application.changeCalcMode());
-        document.getElementById('location').addEventListener('click', () => Application.changeLocationMode());
-        document.getElementById('light').addEventListener('click', () => Application.changeLight());
+        historyBtn.addEventListener('click', () => Application.changeHistoryMode());
+        calcModeBtn.addEventListener('click', () => Application.changeCalcMode());
+        locationModeBtn.addEventListener('click', () => Application.changeLocationMode());
+        lightBts.addEventListener('click', () => Application.changeLight());
+        infoBtn.addEventListener('click', () => {
+            popup.classList.add('show-popup');
+            calculator.classList.add('blur');
+        });
+        infoBtn.addEventListener('focusout', () => {
+            popup.classList.remove('show-popup');
+            calculator.classList.remove('blur');
+        });
     } else {
         Application.configPageLoaded();
     }

@@ -96,6 +96,10 @@ body {
   padding-bottom: 5px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
+
+  &.blur {
+    filter: blur(8px);
+  }
 }
 
 .calculator-screen {
@@ -219,4 +223,22 @@ img {
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 10px;
   padding: 5px;
+}
+
+
+.popup {
+  display: none;
+}
+
+.show-popup {
+  display: flex;
+  text-shadow: 0 3px 0 map.get($theme-color, 'c3');
+  border: 2px solid map.get($theme-color, 'c2');
+  padding: 25px;
+  border-radius: 15px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: purple;
+  position: absolute;
 }
