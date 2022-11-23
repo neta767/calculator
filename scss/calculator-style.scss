@@ -15,6 +15,13 @@ $theme-color: $light-theme;
   }
 }
 
+.light-screen {
+  .calculator-screen {
+    background-color: yellow;
+    color: black;
+  }
+}
+
 .dark-mode {
   $theme-color: $dark-theme;
   background-color: map.get($theme-color, 'c1');
@@ -99,6 +106,15 @@ body {
   background-color: map.get($theme-color, 'c6');
   text-align: right;
   grid-column: 2/5;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:focus-visible {
+    background-color: map.get($theme-color, 'c2');
+    border: none;
+  }
 }
 
 button {

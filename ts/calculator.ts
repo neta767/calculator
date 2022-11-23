@@ -1,86 +1,158 @@
+const buttons = document.querySelectorAll('.number, .operator');
 const input = document.querySelector('input');
 const log = document.querySelector('textarea');
+let currentValue = '';
+let firstOperand = '';
+let secondOperand = '';
+let operator = '';
+let waitingForSecondOperand = false;
+let strInput = '';
+const standCalcRegex = new RegExp(/^(([0-9]+[-+/*]?)*(\d+\.\d*)?)*$/);
+const sciCalcRegex = new RegExp(/^(([0-9]+[-+/*%^]?)*(\d+\.\d*)?)*$/);
+document.addEventListener("DOMContentLoaded", () => {
+    reset();
+});
 
-export class calculator {
-    currentValue = '';
-    firstOperand = '';
-    secondOperand = '';
-    operator = '';
-    waitingForSecondOperand = false;
-    strInput = '';
 
-    reset(): void {
-        log.value = this.strInput = this.currentValue = this.firstOperand = this.secondOperand = this.operator = input.value = '';
+function isOperator(char: string): boolean {
+    return char == '+' || char == '-' || char == '×' || char == '÷';
+}
+
+class calc {
+    public static scientificMode = true;
+
+    public static reset() {
     }
+}
 
-    scientificEval(char): void {
-        switch (char) {
-            case '=':
-                input.value = eval(this.strInput);
-                break;
-            case 'AC':
-                this.strInput = input.value = '';
-                break;
-            case '÷':
-                this.strInput += '/';
-                break;
-            case '×':
-                this.strInput += '*';
-                break;
-            default:
-                // if (Number.isInteger(Number(char)) || '') {
-                if (!isNaN(Number(char)) || '.') {
-                    // if (char === '0' && this.strInput.slice(-1) === '/') {
-                    //     alert('undefined')
-                    // } else {
-                    this.strInput += char;
-                    input.value = eval(this.strInput);
-                    // }
-                } else {
-                    this.strInput += char;
-                }
+function reset(): void {
+    log.value = strInput = currentValue = firstOperand = secondOperand = operator = input.value = '';
+}
+
+function scientificEval(char): void {
+    if (char == '=') {
+        input.value = eval(strInput);
+    } else if (char == 'AC') {
+        reset();
+        waitingForSecondOperand = false;
+    } else if (isOperator(char)) {
+        if (isOperator(strInput.slice(-1))) {
+            strInput = strInput.slice(0, -1);
         }
-        log.value = this.strInput
+        if (char == '÷') {
+            operator = '/';
+        } else if (char == '×') {
+            operator = '*';
+        } else {
+            operator = char;
+        }
+        strInput += operator;
+        waitingForSecondOperand = true;
+    } else if (!isNaN(Number(char)) || '.') {
+        strInput += char;
+        if (waitingForSecondOperand) {
+            input.value = eval(strInput);
+        }
     }
+    log.value = strInput
+}
 
-    isOperator(char: string): boolean {
-        return char == '+' || char == '-' || char == '×' || char == '÷';
+function standardEval(char: string): void {
+    if (char == '=') {
+        input.value = eval(firstOperand + operator + secondOperand);
+    } else if (char == 'AC') {
+        reset();
+        waitingForSecondOperand = false;
+    } else if (isOperator(char)) {
+        if (waitingForSecondOperand) {
+            firstOperand = currentValue || firstOperand;
+        }
+        if (isOperator(strInput.slice(-1))) {
+            strInput = strInput.slice(0, -1);
+        }
+        strInput += char;
+        log.value = strInput;
+        if (char == '÷') {
+            operator = '/';
+        } else if (char == '×') {
+            operator = '*';
+        } else {
+            operator = char;
+        }
+        secondOperand = '';
+        waitingForSecondOperand = true;
+    } else if (!isNaN(Number(char)) || '.') {
+        strInput += char;
+        log.value = strInput;
+        if (waitingForSecondOperand) {
+            secondOperand += char;
+            input.value = currentValue = eval(firstOperand + operator + secondOperand);
+        } else {
+            firstOperand += char;
+        }
     }
+}
 
-    standardEval(char: string): void {
-        if (char == '=') {
-            input.value = eval(this.firstOperand + this.operator + this.secondOperand);
-        } else if (char == 'AC') {
-            this.reset();
-            this.waitingForSecondOperand = false;
-        } else if (this.isOperator(char)) {
-            if (this.waitingForSecondOperand) {
-                this.firstOperand = this.currentValue || this.firstOperand;
-            }
-            if (this.isOperator(this.strInput.slice(-1))) {
-                this.strInput = this.strInput.slice(0, -1);
-            }
-            this.strInput += char;
-            log.value = this.strInput;
-            if (char == '÷') {
-                this.operator = '/';
-            } else if (char == '×') {
-                this.operator = '*';
-            } else {
-                this.operator = char;
-            }
-            this.secondOperand = '';
-            this.waitingForSecondOperand = true;
-        } else if (!isNaN(Number(char)) || '.') {
-            this.strInput += char;
-            log.value = this.strInput;
-            if (this.waitingForSecondOperand) {
-                this.secondOperand += char
-                // console.log(this.firstOperand + this.operator + this.secondOperand);
-                input.value = this.currentValue = eval(this.firstOperand + this.operator + this.secondOperand);
-            } else {
-                this.firstOperand += char;
+function myEval(char): void {
+    if (calc.scientificMode) {
+        scientificEval(char);
+    } else {
+        standardEval(char);
+    }
+}
+
+input.addEventListener('pointerdown', () => {
+    reset();
+});
+
+input.oninput = function () {
+    let typedInput: string = input.value;
+    if (calc.scientificMode) {
+        if (sciCalcRegex.test(typedInput) == false) {
+            input.value = typedInput.slice(0, -1);
+            window.alert('Input is not legal!');
+        }
+    } else {
+        if (standCalcRegex.test(typedInput) == false) {
+            input.value = typedInput.slice(0, -1);
+            window.alert('Input is not legal!');
+        }
+    }
+};
+
+buttons.forEach(btn => {
+    btn.addEventListener('pointerdown', () => {
+        if (input != document.activeElement) {
+            myEval(btn.innerHTML);
+        }
+    });
+});
+
+document.addEventListener('keydown', event => {
+    buttons.forEach(btn => {
+        if (input != document.activeElement) {
+            if (btn.innerHTML === event.key) {
+                btn.classList.add('key-board-down');
+                myEval(event.key)
             }
         }
+    });
+});
+
+document.addEventListener('keyup', event => {
+    buttons.forEach(btn => {
+        if (input != document.activeElement) {
+            if (btn.innerHTML === event.key) {
+                btn.classList.remove('key-board-down');
+            }
+        }
+    });
+});
+
+function backSpace(): void {
+    const newStrInput = strInput.slice(0, strInput.length - 1);
+    reset();
+    for (let i = 0; i < newStrInput.length; i++) {
+        // myEval(newStrInput[i])
     }
 }

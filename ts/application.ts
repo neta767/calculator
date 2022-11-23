@@ -1,10 +1,8 @@
-import {calculator} from './calculator.js';
-
-const buttons = document.querySelectorAll('.number, .operator');
-const calc = new calculator();
+export {Try} from './Try'
 let displayHistory = true;
 let scientificMode = true;
 let remoteLocation = false;
+let lightOn = false;
 const fonts = document.querySelectorAll('option');
 let theme = 'light';
 let color: string;
@@ -12,7 +10,6 @@ let font: string;
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    calc.reset();
     const queryString = window.location.search;
     if (queryString != '') {
         const urlParams = new URLSearchParams(queryString);
@@ -25,65 +22,25 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll('button').forEach(elem => elem.style.fontFamily = font);
         document.querySelectorAll('textarea').forEach(elem => elem.style.fontFamily = font);
         if (theme == 'dark') {
-            document.body.classList.add("dark-mode");
+            document.body.classList.add("dark-mode")
         } else {
-            document.body.classList.remove("dark-mode");
+            document.body.classList.remove("dark-mode")
 
         }
     }
     fonts.forEach(font => font.style.fontFamily = font.value);
 });
 
-function myEval(char): void {
-    if (scientificMode) {
-        calc.scientificEval(char)
+function changeLight(): void {
+    document.body.classList.toggle("light-screen");
+    const element = document.getElementById('light');
+    lightOn = !lightOn;
+    if (displayHistory === true) {
+        element.title = 'light off';
     } else {
-        calc.standardEval(char)
+        element.title = 'light on';
     }
-}
-
-function backSpace(): void {
-    const newStrInput = calc.strInput.slice(0, calc.strInput.length - 1);
-    console.log(newStrInput)
-    calc.reset();
-    for (let i = 0; i < newStrInput.length; i++) {
-        myEval(newStrInput[i])
-    }
-}
-
-buttons.forEach(button => try1(button));
-
-function try1(button) {
-    const char = button.innerHTML;
-
-    button.addEventListener('pointerdown', () => {
-        myEval(char);
-    });
-};
-
-document.addEventListener('keydown', event => {
-    buttons.forEach(button => try3(button, event))
-});
-
-function try3(button, event) {
-    if (button.innerHTML === event.key) {
-        button.classList.add('key-board-down');
-        myEval(event.key)
-    }
-}
-
-document.addEventListener('keyup', event => {
-    buttons.forEach(button => try2(button, event))
-});
-
-function try2(button, event) {
-    if (button.innerHTML === event.key) {
-        button.classList.remove('key-board-down');
-    }
-}
-
-function changeTheme(): void {
-    // document.body.classList.toggle("dark-mode");
+    changeToggle(element)
 }
 
 function changeToggle(element): void {
@@ -103,7 +60,7 @@ function changeHistoryMode(): void {
 }
 
 function changeCalcMode(): void {
-    calc.reset();
+    // reset();
     document.body.classList.toggle('hide-scientific');
     const elementPic = document.getElementById('calcModePic');
     const elementButton = document.getElementById('calcMode');
