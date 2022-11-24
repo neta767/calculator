@@ -4,30 +4,52 @@
 $theme-color: $light-theme;
 
 @media only screen and (max-width: 600px) {
+  body {
+    height: min-content;
+  }
   .calculator {
-    //width: 100%;
-    overflow: hidden;
-    //display: inline !important;
+    margin-top: 20px;
+    margin-bottom: 20px;
     grid-template-areas: 'calculator-keys'
   'scientific'
   'history';
   }
   button {
-    height: calc(90vw / 6) !important;
-    width: calc(90vw / 6) !important;
+    height: calc(90vw / 6);
+    width: calc(90vw / 6);
+    font-size: calc(90vw / 18);
   }
   .calculator-keys {
     grid-area: calculator-keys;
   }
   .scientific {
+    justify-content: center;
     grid-area: scientific;
   }
   .history {
     grid-area: history;
+    height: 100%;
+  }
+  .calculator-screen {
+    font-size: 9vw;
+    height: calc(90vw / 8);
+  }
+  img {
+    height: calc(90vw / 16);
+  }
+  h2 {
+    //font-size: calc(90vw / 20);
+  }
+  .scientific-keys {
+    width: min-content;
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
 @media only screen and (min-width: 600px) {
+  body {
+    height: 100vh;
+  }
   .calculator {
     //width: 100%;
     overflow: auto;
@@ -37,6 +59,24 @@ $theme-color: $light-theme;
   button {
     height: calc(90vh / 8);
     width: calc(90vh / 8);
+    font-size: calc(90vh / 18);
+  }
+
+  .calculator-screen {
+    font-size: 9vh;
+    height: calc(90vh / 8);
+  }
+  img {
+    height: calc(90vh / 16);
+  }
+  h2 {
+    font-size: calc(90vh / 20);
+  }
+  .history {
+    width: 30vw;
+  }
+  .scientific-keys {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -101,7 +141,7 @@ $theme-color: $light-theme;
   }
 
   img {
-    height: calc(90vh / 16);
+    //height: calc(90vh / 16);
     filter: invert(map.get($theme-color, 'n1'));
   }
 }
@@ -117,7 +157,7 @@ $theme-color: $light-theme;
 
 body {
   background-color: map.get($theme-color, 'c1');
-  height: 100vh;
+  //height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -140,8 +180,8 @@ body {
 
 .calculator-screen {
   width: 100%;
-  font-size: 9vh;
-  height: calc(90vh / 8);
+  //font-size: 9vh;
+  //height: calc(90vh / 8);
   border: none;
   background-color: map.get($theme-color, 'c6');
   text-align: right;
@@ -161,11 +201,11 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc(90vh / 8);
-  width: calc(90vh / 8);
+  //height: calc(90vh / 8);
+  //width: calc(90vh / 8);
   border-radius: 15px;
   border: none;
-  font-size: calc(90vh / 18);
+  //font-size: calc(90vh / 18);
   box-shadow: 0 5px map.get($theme-color, 'c4');
 
   &:hover, {
@@ -209,7 +249,7 @@ button {
 }
 
 h2 {
-  font-size: calc(90vh / 20);
+  //font-size: calc(90vh / 20);
   color: map.get($theme-color, 'c3');
 }
 
@@ -225,7 +265,7 @@ h2 {
 }
 
 img {
-  height: calc(90vh / 16);
+  //height: calc(90vh / 16);
   filter: invert(map.get($theme-color, 'n1'));
 }
 
@@ -234,7 +274,7 @@ img {
 }
 
 .history {
-  width: 30vw;
+  //width: 30vw;
   display: flex;
   flex-direction: column;
 }
@@ -256,7 +296,6 @@ img {
 
 .scientific-keys {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
   grid-gap: 10px;
   padding: 5px;
 }
