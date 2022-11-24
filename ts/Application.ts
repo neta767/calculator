@@ -139,34 +139,40 @@ class Application {
 
 document.addEventListener("DOMContentLoaded", () => {
     const url = document.location.href;
-    if (url.search('index.html') != -1) {
-        Application.indexPageLoaded();
-        historyBtn.addEventListener('click', () => Application.changeHistoryMode());
-        calcModeBtn.addEventListener('click', () => Application.changeCalcMode());
-        locationModeBtn.addEventListener('click', () => Application.changeLocationMode());
-        lightBts.addEventListener('click', () => Application.changeLight());
-        infoBtn.addEventListener('click', () => Application.showPopup());
-        infoBtn.addEventListener('focusout', () => Application.closePopup());
-        document.getElementById('equal').addEventListener('click', () => Application.myEval());
-        input.addEventListener('pointerdown', () => {
-            Calculator.reset();
-        });
+    if (url.search('config.html') != -1) {
+        Application.configPageLoaded();
 
-        input.oninput = function () {
-            console.log(1, input.value)
-            let typedInput: string = input.value;
-            // if (this.scientificMode) {
-            //     if (sciCalcRegex.test(typedInput) == false) {
-            //         input.value = typedInput.slice(0, -1);
-            //         window.alert('Input is not legal!');
-            //     }
-            // } else {
-            //     if (standCalcRegex.test(typedInput) == false) {
-            //         input.value = typedInput.slice(0, -1);
-            //         window.alert('Input is not legal!');
-            //     }
-            // }
-        };
+    } else if (url.search('help.html') != -1) {
+        document.getElementsByTagName('code')[0].innerHTML = version;
+    } else {
+        if (url.search('index.html') != -1) {
+            Application.indexPageLoaded();
+            historyBtn.addEventListener('click', () => Application.changeHistoryMode());
+            calcModeBtn.addEventListener('click', () => Application.changeCalcMode());
+            locationModeBtn.addEventListener('click', () => Application.changeLocationMode());
+            lightBts.addEventListener('click', () => Application.changeLight());
+            infoBtn.addEventListener('click', () => Application.showPopup());
+            infoBtn.addEventListener('focusout', () => Application.closePopup());
+            document.getElementById('equal').addEventListener('click', () => Application.myEval());
+            input.addEventListener('pointerdown', () => {
+                Calculator.reset();
+            });
+
+            input.oninput = function () {
+                console.log(1, input.value)
+                let typedInput: string = input.value;
+                // if (this.scientificMode) {
+                //     if (sciCalcRegex.test(typedInput) == false) {
+                //         input.value = typedInput.slice(0, -1);
+                //         window.alert('Input is not legal!');
+                //     }
+                // } else {
+                //     if (standCalcRegex.test(typedInput) == false) {
+                //         input.value = typedInput.slice(0, -1);
+                //         window.alert('Input is not legal!');
+                //     }
+                // }
+            };
 //not working!!
 // input.addEventListener('focusout', () => {
 //     const mathEqu = input.value;
@@ -175,41 +181,37 @@ document.addEventListener("DOMContentLoaded", () => {
 //     }
 // });
 
-        // buttons.forEach(btn => {
-        //     btn.addEventListener('pointerdown', () => {
-        //         if (input != document.activeElement) {
-        //             Calculator.myEval(btn.innerHTML);
-        //         }
-        //     });
-        // });
-        //
-        // document.addEventListener('keydown', event => {
-        //     buttons.forEach(btn => {
-        //         if (input != document.activeElement) {
-        //             if (btn.innerHTML === event.key) {
-        //                 btn.classList.add('key-board-down');
-        //                 Calculator.myEval(event.key)
-        //             }
-        //         }
-        //     });
-        // });
-        //
-        // document.addEventListener('keyup', event => {
-        //     buttons.forEach(btn => {
-        //         if (input != document.activeElement) {
-        //             if (btn.innerHTML === event.key) {
-        //                 btn.classList.remove('key-board-down');
-        //             }
-        //         }
-        //     });
-        // });
-        //
-        // document.getElementById('backspace').addEventListener('click', () => Calculator.backSpace());
+            // buttons.forEach(btn => {
+            //     btn.addEventListener('pointerdown', () => {
+            //         if (input != document.activeElement) {
+            //             Calculator.myEval(btn.innerHTML);
+            //         }
+            //     });
+            // });
+            //
+            // document.addEventListener('keydown', event => {
+            //     buttons.forEach(btn => {
+            //         if (input != document.activeElement) {
+            //             if (btn.innerHTML === event.key) {
+            //                 btn.classList.add('key-board-down');
+            //                 Calculator.myEval(event.key)
+            //             }
+            //         }
+            //     });
+            // });
+            //
+            // document.addEventListener('keyup', event => {
+            //     buttons.forEach(btn => {
+            //         if (input != document.activeElement) {
+            //             if (btn.innerHTML === event.key) {
+            //                 btn.classList.remove('key-board-down');
+            //             }
+            //         }
+            //     });
+            // });
+            //
+            // document.getElementById('backspace').addEventListener('click', () => Calculator.backSpace());
 
-    } else if (url.search('config.html') != -1) {
-        Application.configPageLoaded();
-
-    } else if (url.search('help.html') != -1) {
-        document.getElementsByTagName('code')[0].innerHTML = version;
+        }
     }
 });
