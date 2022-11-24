@@ -44,6 +44,10 @@ $theme-color: $light-theme;
     width: min-content;
     grid-template-columns: repeat(4, 1fr);
   }
+  .show-popup {
+    width: max-content;
+    font-size: 2vw;
+  }
 }
 
 @media only screen and (min-width: 600px) {
@@ -306,6 +310,7 @@ img {
 }
 
 .show-popup {
+  width: max-content;
   display: flex;
   text-shadow: 0 3px 0 map.get($theme-color, 'c3');
   border: 2px solid map.get($theme-color, 'c2');
@@ -316,4 +321,8 @@ img {
   transform: translate(-50%, -50%);
   background-color: purple;
   position: absolute;
+}
+
+.base-btn {
+  font-size: 3vh
 }

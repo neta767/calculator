@@ -8,6 +8,98 @@ export class Calculator {
     private static operator = '';
     private static waitingForSecondOperand = false;
     private static strInput = '';
+    private operators = [
+        {
+            id: "op-squared",
+            symbol: " ^2",
+            calc: function (a) {
+                return Math.pow(a, 2);
+            }
+        },
+        {
+            id: "op-power",
+            symbol: " ^",
+            calc: function (a, b) {
+                return Math.pow(a, b);
+            }
+        },
+        {
+            id: "op-negate",
+            symbol: " -",
+            calc: function (a) {
+                return -a;
+            }
+        },
+        {
+            id: "op-square-root",
+            symbol: " √",
+            calc: function (a) {
+                return Math.sqrt(a);
+            }
+        },
+        // {
+        //     id: "op-log",
+        //     numOperands: 1,
+        //     symbol: " log ",
+        //     calc: function (a) {
+        //         return Math.log10(a);
+        //     }
+        // },
+        {
+            id: "op-nth-root",
+            numOperands: 2,
+            symbol: "*√",
+            calc: function (a, b) {
+                return Math.pow(b, 1 / a);
+            }
+        },
+        {
+            id: "op-multiply",
+            numOperands: 2,
+            symbol: " x ",
+            calc: function (a, b) {
+                return a * b;
+            }
+        },
+        {
+            id: "op-divide",
+            symbol: " ÷ ",
+            calc: function (a, b) {
+                return a / b;
+            }
+        },
+        {
+            id: "op-add",
+            symbol: " + ",
+            calc: function (a, b) {
+                return a + b;
+            }
+        },
+        {
+            id: "op-subtract",
+            numOperands: 2,
+            symbol: " - ",
+            calc: function (a, b) {
+                return a - b;
+            }
+        },
+        {
+            id: "op-subtract",
+            numOperands: 2,
+            symbol: " - ",
+            calc: function (a, b) {
+                return a - b;
+            }
+        },
+        {
+            id: "op-modulo",
+            numOperands: 2,
+            symbol: " % ",
+            calc: function (a, b) {
+                return a - b * Math.floor(a / b);
+            }
+        }
+    ];
 
     private static isOperator(char: string): boolean {
         return char == '+' || char == '-' || char == '×' || char == '÷';
@@ -88,11 +180,11 @@ export class Calculator {
     }
 
     static myEval(char): void {
-        if (this.scientificMode) {
-            this.scientificEval(char);
-        } else {
-            this.standardEval(char);
-        }
+        // if (this.scientificMode) {
+        //     this.scientificEval(char);
+        // } else {
+        //     this.standardEval(char);
+        // }
     }
 
     static backSpace(): void {
