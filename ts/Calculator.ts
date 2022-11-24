@@ -2,7 +2,6 @@ export class Calculator {
     static input = document.querySelector('input');
     static log = document.querySelector('textarea');
 
-    public static scientificMode = true;
     private static currentValue = '';
     private static firstOperand = '';
     private static secondOperand = '';
@@ -15,6 +14,7 @@ export class Calculator {
     }
 
     static reset(): void {
+        this.log.rows = 1;
         this.log.value = this.strInput = this.currentValue = this.firstOperand = this.secondOperand = this.operator = this.input.value = '';
     }
 

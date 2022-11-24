@@ -3,6 +3,43 @@
 
 $theme-color: $light-theme;
 
+@media only screen and (max-width: 600px) {
+  .calculator {
+    //width: 100%;
+    overflow: hidden;
+    //display: inline !important;
+    grid-template-areas: 'calculator-keys'
+  'scientific'
+  'history';
+  }
+  button {
+    height: calc(90vw / 6) !important;
+    width: calc(90vw / 6) !important;
+  }
+  .calculator-keys {
+    grid-area: calculator-keys;
+  }
+  .scientific {
+    grid-area: scientific;
+  }
+  .history {
+    grid-area: history;
+  }
+}
+
+@media only screen and (min-width: 600px) {
+  .calculator {
+    //width: 100%;
+    overflow: auto;
+    grid-template-columns: 1fr 1fr 1fr;
+
+  }
+  button {
+    height: calc(90vh / 8);
+    width: calc(90vh / 8);
+  }
+}
+
 .hide-scientific {
   .scientific {
     display: none;
@@ -88,14 +125,13 @@ body {
 
 
 .calculator {
-  overflow: auto;
+  //overflow: auto;
   border: 1px solid map.get($theme-color, 'c2');
   border-radius: 15px;
   width: min-content;
   background-color: map.get($theme-color, 'c5');
   padding-bottom: 5px;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
 
   &.blur {
     filter: blur(8px);
