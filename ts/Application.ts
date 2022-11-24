@@ -1,5 +1,6 @@
 import {Calculator} from "./Calculator.js";
 
+const log = document.querySelector('textarea');
 const fonts = document.querySelectorAll('option');
 const input = document.querySelector('input');
 const buttons = document.querySelectorAll('.number, .operator');
@@ -15,9 +16,9 @@ const sciCalcRegex = new RegExp(/^(([0-9]+[-+/*%^]?)*(\d+\.\d*)?)*$/);
 const version = '4.0.0'
 
 class Application {
-    private static scientificMode = true;
+    public static scientificMode = true;
     private static displayHistory = true;
-    private static remoteLocation = false;
+    public static remoteLocation = false;
     private static lightOn = false;
     private static theme = 'light';
     private static color: string;
@@ -111,30 +112,6 @@ class Application {
         popup.classList.remove('show-popup');
         calculator.classList.remove('blur');
     }
-
-
-    static async try1() {
-        try {
-            const response = await fetch('https://api.mathjs.org/v4/?expr=' + encodeURIComponent(input.value));
-            const data = await response.json();
-            input.value = data;
-            return;
-        } catch (e) {
-            alert('something wont wrong');
-        }
-    }
-
-    static myEval(): void {
-        if (this.remoteLocation == true) {
-            this.try1().then();
-        } else {
-            if (this.scientificMode) {
-
-            } else {
-
-            }
-        }
-    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -145,34 +122,81 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (url.search('help.html') != -1) {
         document.getElementsByTagName('code')[0].innerHTML = version;
     } else {
-        if (url.search('index.html') != -1) {
-            Application.indexPageLoaded();
-            historyBtn.addEventListener('click', () => Application.changeHistoryMode());
-            calcModeBtn.addEventListener('click', () => Application.changeCalcMode());
-            locationModeBtn.addEventListener('click', () => Application.changeLocationMode());
-            lightBts.addEventListener('click', () => Application.changeLight());
-            infoBtn.addEventListener('click', () => Application.showPopup());
-            infoBtn.addEventListener('focusout', () => Application.closePopup());
-            document.getElementById('equal').addEventListener('click', () => Application.myEval());
-            input.addEventListener('pointerdown', () => {
-                Calculator.reset();
-            });
+        Application.indexPageLoaded();
+        historyBtn.addEventListener('click', () => Application.changeHistoryMode());
+        calcModeBtn.addEventListener('click', () => Application.changeCalcMode());
+        locationModeBtn.addEventListener('click', () => Application.changeLocationMode());
+        lightBts.addEventListener('click', () => Application.changeLight());
+        infoBtn.addEventListener('click', () => Application.showPopup());
+        infoBtn.addEventListener('focusout', () => Application.closePopup());
+        document.getElementById('equal').addEventListener('click', () => myEval());
+        input.addEventListener('pointerdown', () => {
+            Calculator.reset();
+        });
 
-            input.oninput = function () {
-                console.log(1, input.value)
-                let typedInput: string = input.value;
-                // if (this.scientificMode) {
-                //     if (sciCalcRegex.test(typedInput) == false) {
-                //         input.value = typedInput.slice(0, -1);
-                //         window.alert('Input is not legal!');
-                //     }
-                // } else {
-                //     if (standCalcRegex.test(typedInput) == false) {
-                //         input.value = typedInput.slice(0, -1);
-                //         window.alert('Input is not legal!');
-                //     }
-                // }
-            };
+        // // Catches all button clicks on the page
+        buttons.forEach(btn => {
+            btn.addEventListener('pointerdown', (event) => {
+                if (input != document.activeElement) {
+                    Calculator.processButton(event.target);
+                }
+            });
+        });
+        //
+        // document.getElementsByClassName('calc-history-eq')[0].addEventListener('click',(event)=> {
+        //     let tokens = Calculator.calcHistory[parseInt(event.target).attr("id").substring(2))].tokens();
+        //     Calculator.tokenList = tokens;
+        //     Calculator.displayEquation();
+        // });
+
+        async function fetchWithTimeout(url, timeout = 2000) {
+            const controller = new AbortController();
+            const id = setTimeout(() => controller.abort(), timeout);
+            clearTimeout(id);
+            return await fetch(url, {
+                signal: controller.signal
+            });
+        }
+
+        async function remoteEval() {
+            try {
+                const url = `https://api.mathjs.org/v4/?expr=${encodeURIComponent(input.value)}`;
+                const response = await this.fetchWithTimeout(url);
+                const data = await response.text();
+                input.value = data;
+            } catch (e) {
+                if (confirm('Something went wrong. Would you like to change to local?')) {
+                    Application.changeLocationMode();
+                }
+            }
+        }
+
+        async function myEval() {
+            if (Application.remoteLocation == true) {
+                return await this.remoteEval();
+            } else {
+                if (Application.scientificMode) {
+                    // Calculator.scientificEval(input.value);
+                } else {
+                    // Calculator.standardEval(input.value);
+                }
+            }
+        }
+
+        input.oninput = function () {
+            let typedInput: string = input.value;
+            // if (this.scientificMode) {
+            //     if (sciCalcRegex.test(typedInput) == false) {
+            //         input.value = typedInput.slice(0, -1);
+            //         window.alert('Input is not legal!');
+            //     }
+            // } else {
+            //     if (standCalcRegex.test(typedInput) == false) {
+            //         input.value = typedInput.slice(0, -1);
+            //         window.alert('Input is not legal!');
+            //     }
+            // }
+        };
 //not working!!
 // input.addEventListener('focusout', () => {
 //     const mathEqu = input.value;
@@ -181,37 +205,36 @@ document.addEventListener("DOMContentLoaded", () => {
 //     }
 // });
 
-            // buttons.forEach(btn => {
-            //     btn.addEventListener('pointerdown', () => {
-            //         if (input != document.activeElement) {
-            //             Calculator.myEval(btn.innerHTML);
-            //         }
-            //     });
-            // });
-            //
-            // document.addEventListener('keydown', event => {
-            //     buttons.forEach(btn => {
-            //         if (input != document.activeElement) {
-            //             if (btn.innerHTML === event.key) {
-            //                 btn.classList.add('key-board-down');
-            //                 Calculator.myEval(event.key)
-            //             }
-            //         }
-            //     });
-            // });
-            //
-            // document.addEventListener('keyup', event => {
-            //     buttons.forEach(btn => {
-            //         if (input != document.activeElement) {
-            //             if (btn.innerHTML === event.key) {
-            //                 btn.classList.remove('key-board-down');
-            //             }
-            //         }
-            //     });
-            // });
-            //
-            // document.getElementById('backspace').addEventListener('click', () => Calculator.backSpace());
+        // buttons.forEach(btn => {
+        //     btn.addEventListener('pointerdown', () => {
+        //         if (input != document.activeElement) {
+        //             Calculator.myEval(btn.innerHTML);
+        //         }
+        //     });
+        // });
+        //
+        // document.addEventListener('keydown', event => {
+        //     buttons.forEach(btn => {
+        //         if (input != document.activeElement) {
+        //             if (btn.innerHTML === event.key) {
+        //                 btn.classList.add('key-board-down');
+        //                 Calculator.myEval(event.key)
+        //             }
+        //         }
+        //     });
+        // });
+        //
+        // document.addEventListener('keyup', event => {
+        //     buttons.forEach(btn => {
+        //         if (input != document.activeElement) {
+        //             if (btn.innerHTML === event.key) {
+        //                 btn.classList.remove('key-board-down');
+        //             }
+        //         }
+        //     });
+        // });
+        //
+        // document.getElementById('backspace').addEventListener('click', () => Calculator.backSpace());
 
-        }
     }
 });

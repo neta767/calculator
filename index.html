@@ -6,6 +6,7 @@
     <title>Calculator</title>
     <link href="img/calculator-icon.png" rel="icon" type="image/x-icon">
     <link href="scss/calculator-style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
 <div class="calculator">
@@ -14,7 +15,10 @@
             <img src="img/history.png">
             <h2>Operation log</h2>
         </div>
-        <textarea type="text" class="log" disabled></textarea>
+        <!--        <textarea type="text" class="log" rows="1" disabled></textarea>-->
+        <div id="calc-history-box">
+            <div class="calc-history-box"><p></p></div>
+        </div>
     </div>
     <div class="calculator-keys">
         <button id="info" title="information"><img src="img/information.png"></button>
@@ -30,30 +34,30 @@
 
         <button id="history" title="hide history" class="change-toggle"><img
                 src="img/history.png"></button>
-        <button class="all-clear operator" id="all-clear">AC</button>
-        <button class="operator" id="divide">÷</button>
+        <button class="all-clear operator" id="clear">AC</button>
+        <button class="operator" id="op-divide">÷</button>
 
         <button id="calcMode" title="standard"><img src="img/calculator.png"
                                                     id="calcModePic"></button>
         <button class="number" id="num-7">7</button>
         <button class="number" id="num-8">8</button>
         <button class="number" id="num-9">9</button>
-        <button class="operator" id="times">×</button>
+        <button class="operator" id="op-multiply">×</button>
 
         <button id="location" title="remote"><img src="img/remote.png"></button>
         <button class="number" id="num-4">4</button>
         <button class="number" id="num-5">5</button>
         <button class="number" id="num-6">6</button>
-        <button class="operator" id="sub">-</button>
+        <button class="operator" id="op-subtract">-</button>
 
         <button class="number row-start-2" id="a1">1</button>
         <button class="number" id="a2">2</button>
         <button class="number" id="a3">3</button>
-        <button class="operator" id="add">+</button>
+        <button class="operator" id="op-add">+</button>
 
-        <button class="row-start-2 operator" id="plus–minus">±</button>
+        <button class="row-start-2 operator" id="op-negate" class="operator">±</button>
         <button class="number" id="num-0">0</button>
-        <button class="number" id="dot">.</button>
+        <button class="number" id="period">.</button>
         <button class="operator" id="equal">=</button>
     </div>
     <div class="scientific">
@@ -62,16 +66,17 @@
             <h2>Scientific</h2>
         </div>
         <div class="scientific-keys">
-            <button>%</button>
-            <button><img src="img/pi.png"></button>
-            <button><img src="img/squared.png"></button>
+            <button id="op-modulo" class="operator">%</button>
+            <!--!!!!-->
+            <button id="num-pi" class="operator">π</button>
+            <button id="op-squared" class="operator">x^2</button>
 
-            <button><img src="img/power.png"></button>
-            <button><img src="img/square-root.png"></button>
+            <button id="op-power" class="operator">x^y</button>
+            <button id="op-square-root" class="operator">√</button>
 
-            <button><img src="img/nth-root.png"></button>
+            <button id="op-nth-root" class="operator">x*√</button>
             <button class="base-btn">Base₂</button>
-            <button>!</button>
+            <button id="op-factorial" class="operator">!</button>
         </div>
     </div>
 </div>
@@ -79,7 +84,7 @@
     keyboard!)
 </h1>
 </div>
-<script>var exports = {};</script>
+<script>let exports = {};</script>
 <script type="module" src="ts/Application.js"></script>
 <script src="ts/Calculator.js"></script>
 </body>

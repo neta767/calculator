@@ -32,7 +32,7 @@ $theme-color: $light-theme;
   }
   .calculator-screen {
     font-size: 9vw;
-    height: calc(90vw / 8);
+    height: 15vw;
   }
   img {
     height: calc(90vw / 16);
@@ -47,6 +47,9 @@ $theme-color: $light-theme;
   .show-popup {
     width: max-content;
     font-size: 2vw;
+  }
+  #calc-history-box {
+    height: 250px;
   }
 }
 
@@ -81,6 +84,9 @@ $theme-color: $light-theme;
   }
   .scientific-keys {
     grid-template-columns: repeat(2, 1fr);
+  }
+  #calc-history-box {
+    height: 100%;
   }
 }
 
@@ -325,4 +331,20 @@ img {
 
 .base-btn {
   font-size: 3vh
+}
+
+#calc-history-box {
+  width: 85%;
+  background-color: #636363;
+  border-radius: 5px;
+  margin: 10px;
+  padding: 10px;
+  box-shadow: 0 5px 10px #444444 inset;
+  resize: none;
+  overflow: hidden;
+}
+
+.calc-history-eq {
+  color: #B0B0B0;
+  cursor: pointer;
 }
