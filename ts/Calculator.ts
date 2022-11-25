@@ -1,13 +1,11 @@
 export class Calculator {
-    // static log = document.querySelector('textarea');
-
+    private static input = document.querySelector('input');
+    private static history = document.querySelectorAll('.calc-history-box');
     private static currentValue = '';
     private static firstOperand = '';
     private static secondOperand = '';
     private static operator = '';
     private static waitingForSecondOperand = false;
-    // private static strInput = '';
-    static result1 = 1;
     private static operators = [
 
         {
@@ -115,17 +113,25 @@ export class Calculator {
             }
         }
     ];
+    private static expression = ''
+    // The number of places to round to
+    private static roundPlaces = 2;
+    // A list of every token (number or operator) currently in the expression
+    private static tokenList = [];
+    // A list of previous results and expressions in the form {out: output, expression: expression string, tokens: list of tokens in the expression}
+    private static calcHistory = [];
 
-    static reset(): void {
-
-        this.currentValue = this.firstOperand = this.secondOperand = this.operator;
+    public static reset(): void {
+        this.waitingForSecondOperand = false;
+        this.tokenList.length = 0;
+        this.expression = this.currentValue = this.firstOperand = this.secondOperand = this.operator = this.input.value = '';
     }
 
-    // The number of places to round to
-    static roundPlaces = 5;
-
+    /**
+     * scientific calculate functions
+     **/
     // Get the operator object for a given operator ID
-    static getOperator(opID) {
+    private static getOperator(opID) {
         for (let i = 0; i < this.operators.length; i++) {
             if (this.operators[i].id === opID) {
                 return this.operators[i];
@@ -135,37 +141,28 @@ export class Calculator {
     }
 
     // Get the precedence of an operator given its ID
-    static getOpPrecedence(opID) {
+    private static getOpPrecedence(opID) {
         for (let i = 0; i < this.operators.length; i++) {
             if (this.operators[i].id === opID) {
                 return i;
             }
         }
-
         // If the given ID does not return an operator, then return a large value that will always lose in precedence
         return 1000;
     }
 
     // Returns true if op1 ID has equal or higher precedence than op2 ID, false otherwise
-    static hasPrecedence(op1, op2) {
+    private static hasPrecedence(op1, op2) {
         if (this.getOperator(op1) != undefined) {
             return this.getOpPrecedence(op1) <= this.getOpPrecedence(op2);
         }
     }
 
-    // A list of every token (number or operator) currently in the expression
-    static tokenList = [];
-
-    // A list of previous results and expressions in the form {out: output, expression: expression string, tokens: list of tokens in the expression}
-    static calcHistory = [];
-
     // Evaluates the expression and outputs the result
-    static calculate() {
-
+    private static scientificCalculate() {
         // Evaluate the expression using a modified version of the shunting yard algorithm
         let valStack = [];
         let opStack = [];
-
         for (let i = 0; i < this.tokenList.length; i++) {
             if (!isNaN(this.tokenList[i])) {
                 valStack.push(this.tokenList[i]);
@@ -182,7 +179,6 @@ export class Calculator {
                 opStack.push(this.tokenList[i]);
             }
         }
-
         while (opStack.length > 0) {
             let operator = this.getOperator(opStack.pop());
             if (operator.numOperands === 1)
@@ -191,12 +187,12 @@ export class Calculator {
                 valStack.push(this.applyOperator(operator, [valStack.pop(), valStack.pop()]));
         }
 
-        // Output the calculated result and the original expression
-        this.output(document.querySelector('input').value, valStack[0], this.tokenList);
+        // Output the calculated result and the original expression in the history
+        this.output(this.input.value, valStack[0]);
     }
 
     // Returns the result of applying the given unary or binary operator on the top values of the value stack
-    static applyOperator(operator, vals) {
+    private static applyOperator(operator, vals) {
         let valA = vals[0];
         let result;
         if (vals.length === 1) {
@@ -205,42 +201,24 @@ export class Calculator {
             let valB = vals[1];
             result = operator.calc(parseFloat(valB), parseFloat(valA));
         }
-
         return result;
     }
 
-    // Updates the equation and calc history with the given output
-    static output(expression, out, tokens) {
-        document.querySelector('input').value = out.toString();
-
-        this.calcHistory.push({out: out, expression: expression, tokens: tokens});
-        document.querySelectorAll('.calc-history-box').forEach(elem => elem.innerHTML = '');
-        for (let i = this.calcHistory.length - 1; i >= 0; i--) {
-            let list = document.querySelectorAll('.calc-history-box');
-            let item1 = document.createElement("p");
-            let item2 = document.createElement("p");
-            item1.classList.add('calc-history-eq');
-            item1.style.color = '#B0B0B0';
-            item1.innerHTML = this.calcHistory[i].expression;
-            item1.style.textAlign = 'left';
-            item2.style.marginTop = '10px';
-            item2.innerHTML = '=' + this.calcHistory[i].out;
-            list[0].appendChild(item1)
-            list[0].appendChild(item2)
-        }
-    }
-
     // Adds a token to the token list and updates the display
-    static addToken(token) {
+    private static addToken(token) {
         if (isNaN(token)) {
+            //for expression like 3pi
             if (token === "num-pi" && !isNaN(this.tokenList[this.tokenList.length - 1])) {
                 this.tokenList.push("op-multiply");
+            } else if (this.getOperator(token) && this.getOperator(this.tokenList[this.tokenList.length - 1])) {
+                this.tokenList.pop();
             }
             this.tokenList.push(token);
         } else {
             if (!isNaN(this.tokenList[this.tokenList.length - 1])) {
                 this.tokenList[this.tokenList.length - 1] = this.tokenList[this.tokenList.length - 1] + token;
             } else {
+                //for expression like pi3
                 if (!isNaN(token) && this.tokenList[this.tokenList.length - 1] === "num-pi") {
                     this.tokenList.push("op-multiply");
                 }
@@ -250,13 +228,13 @@ export class Calculator {
         this.displayEquation();
     }
 
-    // Updates the expression display's HTML
-    static displayEquation() {
+    // Updates the input
+    private static displayEquation() {
         let htmlString = "";
         for (let i = 0; i < this.tokenList.length; i++) {
             if (isNaN(this.tokenList[i])) {
                 if (this.tokenList[i] === "num-pi") {
-                    htmlString += " π ";
+                    htmlString += "π";
                 } else {
                     htmlString += this.getOperator(this.tokenList[i]).symbol;
                 }
@@ -264,11 +242,11 @@ export class Calculator {
                 htmlString += this.tokenList[i];
             }
         }
-        document.querySelector('input').value = htmlString;
+        this.input.value = htmlString;
     }
 
     // Deletes the last entered token
-    static deleteLast() {
+    private static deleteLast() {
         if (isNaN(this.tokenList[this.tokenList.length - 1])) {
             this.tokenList.pop();
         } else {
@@ -277,124 +255,144 @@ export class Calculator {
                 this.tokenList.pop();
             }
         }
-
         this.displayEquation();
     }
 
-    // Triggers the appropriate action for each button that can be pressed
-    static processButton(button) {
-        switch (button.id) {
-            case "backspace":
-                this.deleteLast();
-                break;
-            case "clear":
-                if (this.tokenList.length === 0) {
-                    this.calcHistory.length = 0;
-                    document.querySelectorAll('.calc-history-box').forEach(elem => elem.innerHTML = '');
-                } else {
-                    this.tokenList.length = 0;
-                    this.displayEquation();
-                }
-                break;
-            case "period":
-                if (isNaN(this.tokenList[this.tokenList.length - 1])) {
-                    this.addToken("0.");
-                } else {
-                    if (this.tokenList[this.tokenList.length - 1].indexOf(".") === -1) {
-                        this.tokenList[this.tokenList.length - 1] += ".";
-                    }
-                }
-                this.displayEquation();
-                break;
-            case "equal":
-                this.calculate();
-                break;
-            case "num-pi":
-                this.addToken("num-pi");
-                break;
-            default:
-                if (button.classList.contains("number")) {
-                    this.addToken(button.innerHTML);
-                } else {
-                    this.addToken(button.id);
-                }
+    /**
+     * standard calculate functions
+     **/
+    private static isOperator(char: string): boolean {
+        return char == '+' || char == '-' || char == '×' || char == '÷';
+    }
+
+    private static standardCalculate(char: string): void {
+        console.log(char, this.expression)
+        if (char == '=') {
+            let out = eval(this.firstOperand + this.operator + this.secondOperand);
+            this.output(this.expression, out)
+        } else if (this.isOperator(char)) {
+            if (this.waitingForSecondOperand) {
+                this.firstOperand = this.currentValue || this.firstOperand;
+            }
+            if (this.isOperator(this.expression.slice(-1))) {
+                this.expression = this.expression.slice(0, -1);
+            }
+            if (char == '÷') {
+                this.operator = '/';
+            } else if (char == '×') {
+                this.operator = '*';
+            } else {
+                this.operator = char;
+            }
+            this.expression += this.operator;
+            this.secondOperand = '';
+            this.waitingForSecondOperand = true;
+        } else if (!isNaN(Number(char)) || '.') {
+            this.expression += char;
+            if (this.waitingForSecondOperand) {
+                this.secondOperand += char;
+                this.input.value = this.currentValue = eval(this.firstOperand + this.operator + this.secondOperand);
+            } else {
+                this.firstOperand += char;
+            }
         }
     }
 
-    // public static scientificEval(char): void {
-    //     // if (char == '=') {
-    //     //     this.input.value = eval(this.strInput);
-    //     //     this.log.value = this.log.value + '\n= ' + this.input.value + '\n' + this.input.value;
-    //     //     this.log.rows += 2;
-    //     // } else if (char == 'AC') {
-    //     //     this.reset();
-    //     //     this.waitingForSecondOperand = false;
-    //     // } else if (this.isOperator(char)) {
-    //     //     if (this.isOperator(this.strInput.slice(-1))) {
-    //     //         this.strInput = this.strInput.slice(0, -1);
-    //     //         this.log.value = this.log.value.slice(0, -1);
-    //     //     }
-    //     //     if (char == '÷') {
-    //     //         this.operator = '/';
-    //     //     } else if (char == '×') {
-    //     //         this.operator = '*';
-    //     //     } else {
-    //     //         this.operator = char;
-    //     //     }
-    //     //     this.strInput += this.operator;
-    //     //     this.log.value += this.operator;
-    //     //     this.waitingForSecondOperand = true;
-    //     // } else if (!isNaN(Number(char)) || '.') {
-    //     //     this.strInput += char;
-    //     //     this.log.value += char;
-    //     //     if (this.waitingForSecondOperand) {
-    //     //         this.input.value = eval(this.strInput);
-    //     //     }
-    //     // }
-    //     // this.log.value = this.strInput
-    // }
+    private static backSpace(): void {
+        const newStrInput = this.expression.slice(0, this.expression.length - 1);
+        this.reset();
+        for (let i = 0; i < newStrInput.length; i++) {
+            this.standardCalculate(newStrInput[i])
+        }
+    }
 
-    // public static standardEval(char: string): void {
-    //     if (char == '=') {
-    //         this.input.value = eval(this.firstOperand + this.operator + this.secondOperand);
-    //     } else if (char == 'AC') {
-    //         this.reset();
-    //         this.waitingForSecondOperand = false;
-    //     } else if (this.isOperator(char)) {
-    //         if (this.waitingForSecondOperand) {
-    //             this.firstOperand = this.currentValue || this.firstOperand;
-    //         }
-    //         if (this.isOperator(this.strInput.slice(-1))) {
-    //             this.strInput = this.strInput.slice(0, -1);
-    //         }
-    //         this.strInput += char;
-    //         this.log.value = this.strInput;
-    //         if (char == '÷') {
-    //             this.operator = '/';
-    //         } else if (char == '×') {
-    //             this.operator = '*';
-    //         } else {
-    //             this.operator = char;
-    //         }
-    //         this.secondOperand = '';
-    //         this.waitingForSecondOperand = true;
-    //     } else if (!isNaN(Number(char)) || '.') {
-    //         this.strInput += char;
-    //         this.log.value = this.strInput;
-    //         if (this.waitingForSecondOperand) {
-    //             this.secondOperand += char;
-    //             this.input.value = this.currentValue = eval(this.firstOperand + this.operator + this.secondOperand);
-    //         } else {
-    //             this.firstOperand += char;
-    //         }
-    //     }
-    // }
+    /**
+     *both calculator functions
+     */
+    // Updates the equation and calc history
+    private static output(expression, out) {
+        if (!Number.isInteger(out)) {
+            out = out.toFixed(this.roundPlaces);
+        }
+        this.input.value = out.toString();
+        this.calcHistory.push({out: out, expression: expression});
+        this.history.forEach(elem => elem.innerHTML = '');
+        for (let i = this.calcHistory.length - 1; i >= 0; i--) {
+            let list = this.history;
+            let item1 = document.createElement("div");
+            let item2 = document.createElement("div");
+            item1.classList.add('calc-history-eq');
+            item1.innerHTML = this.calcHistory[i].expression;
+            item1.style.textAlign = 'left';
+            item2.classList.add('calc-history-eq');
+            item2.innerHTML = `= ${this.calcHistory[i].out} <hr>`;
+            list[0].appendChild(item1)
+            list[0].appendChild(item2)
+        }
+    }
 
-    // static backSpace(): void {
-    //     const newStrInput = this.strInput.slice(0, this.strInput.length - 1);
-    //     this.reset();
-    //     for (let i = 0; i < newStrInput.length; i++) {
-    //         this.myEval(newStrInput[i])
-    //     }
-    // }
+    // Triggers the appropriate action for each button that can be pressed
+    public static processButton(button, scientificMode, remoteLocation) {
+        switch (button.id) {
+            case "backspace":
+                if (scientificMode || remoteLocation) {
+                    this.deleteLast();
+                } else {
+                    this.backSpace();
+                }
+                break;
+            case "clear":
+                if (scientificMode || remoteLocation) {
+                    if (this.tokenList.length === 0) {
+                        this.calcHistory.length = 0;
+                        this.history.forEach(elem => elem.innerHTML = '');
+                    } else {
+                        this.reset();
+                        this.displayEquation();
+                    }
+                } else {
+                    if (this.expression === '') {
+                        this.calcHistory.length = 0;
+                        this.history.forEach(elem => elem.innerHTML = '');
+                    } else {
+                        this.reset();
+                    }
+                }
+                break;
+            case "period":
+                if (scientificMode || remoteLocation) {
+                    if (isNaN(this.tokenList[this.tokenList.length - 1])) {
+                        this.addToken("0.");
+                    } else {
+                        if (this.tokenList[this.tokenList.length - 1].indexOf(".") === -1) {
+                            this.tokenList[this.tokenList.length - 1] += ".";
+                        }
+                    }
+                    this.displayEquation();
+                } else {
+                    this.standardCalculate(button.innerHTML)
+                }
+                break;
+            case "equal":
+                if (!remoteLocation) {
+                    if (scientificMode) {
+                        this.scientificCalculate();
+                    } else {
+                        this.standardCalculate(button.innerHTML);
+                    }
+                }
+                break;
+            default:
+                if (scientificMode || remoteLocation) {
+                    if (button.classList.contains("number")) {
+                        this.addToken(button.innerHTML);
+                    } else {
+                        this.addToken(button.id);
+                    }
+                } else {
+                    this.standardCalculate(button.innerHTML)
+                }
+
+        }
+    }
 }

@@ -12,10 +12,8 @@ $theme-color: $light-theme;
 }
 
 body {
-
   background-color: map.get($theme-color, 'c1');
   height: 100vh;
-  //width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -29,7 +27,6 @@ body {
 
 img {
   height: 9vh;
-  color: #ffffff;
 }
 
 fieldset {

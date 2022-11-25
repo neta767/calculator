@@ -37,9 +37,6 @@ $theme-color: $light-theme;
   img {
     height: calc(90vw / 16);
   }
-  h2 {
-    //font-size: calc(90vw / 20);
-  }
   .scientific-keys {
     width: min-content;
     grid-template-columns: repeat(4, 1fr);
@@ -58,7 +55,6 @@ $theme-color: $light-theme;
     height: 100vh;
   }
   .calculator {
-    //width: 100%;
     overflow: auto;
     grid-template-columns: 1fr 1fr 1fr;
 
@@ -114,7 +110,6 @@ $theme-color: $light-theme;
   background-color: map.get($theme-color, 'c1');
 
   * {
-    //color: map.get($theme-color, 'c10');
     font-weight: map.get($theme-color, 'font-weight');
   }
 
@@ -123,10 +118,6 @@ $theme-color: $light-theme;
     background-color: map.get($theme-color, 'c5');
   }
 
-  //.calculator-screen {
-  //  background-color: map.get($theme-color, 'c6');
-  //}
-
   button {
     box-shadow: 0 5px map.get($theme-color, 'c4');
 
@@ -134,10 +125,6 @@ $theme-color: $light-theme;
       background-color: map.get($theme-color, 'c7');
       color: map.get($theme-color, 'c3');
     }
-
-    //&.all-clear {
-    //  background-color: map.get($theme-color, 'c8');
-    //}
 
     &.number {
       background-color: map.get($theme-color, 'c9');
@@ -151,13 +138,11 @@ $theme-color: $light-theme;
   }
 
   img {
-    //height: calc(90vh / 16);
     filter: invert(map.get($theme-color, 'n1'));
   }
 }
 
 * {
-  //font-family: Verdana, "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
   font-weight: map.get($theme-color, 'font-weight');
   color: map.get($theme-color, 'c10');
   margin: 0;
@@ -166,16 +151,14 @@ $theme-color: $light-theme;
 }
 
 body {
+  font-family: Verdana, "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
   background-color: map.get($theme-color, 'c1');
-  //height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-
 .calculator {
-  //overflow: auto;
   border: 1px solid map.get($theme-color, 'c2');
   border-radius: 15px;
   width: min-content;
@@ -190,8 +173,6 @@ body {
 
 .calculator-screen {
   width: 100%;
-  //font-size: 9vh;
-  //height: calc(90vh / 8);
   border: none;
   background-color: map.get($theme-color, 'c6');
   text-align: right;
@@ -211,11 +192,8 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
-  //height: calc(90vh / 8);
-  //width: calc(90vh / 8);
   border-radius: 15px;
   border: none;
-  //font-size: calc(90vh / 18);
   box-shadow: 0 5px map.get($theme-color, 'c4');
 
   &:hover, {
@@ -259,7 +237,6 @@ button {
 }
 
 h2 {
-  //font-size: calc(90vh / 20);
   color: map.get($theme-color, 'c3');
 }
 
@@ -275,7 +252,6 @@ h2 {
 }
 
 img {
-  //height: calc(90vh / 16);
   filter: invert(map.get($theme-color, 'n1'));
 }
 
@@ -284,9 +260,9 @@ img {
 }
 
 .history {
-  //width: 30vw;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .log {
@@ -309,7 +285,6 @@ img {
   grid-gap: 10px;
   padding: 5px;
 }
-
 
 .popup {
   display: none;
@@ -345,6 +320,7 @@ img {
 }
 
 .calc-history-eq {
-  color: #B0B0B0;
-  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.5em;
+  text-shadow: 0 3px 0 map.get($theme-color, 'c3');
 }

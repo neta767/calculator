@@ -12,7 +12,7 @@ const infoBtn = document.getElementById('info');
 const popup = document.getElementById("popup");
 const calculator = document.getElementsByClassName('calculator')[0];
 const standCalcRegex = new RegExp(/^(([0-9]+[-+/*]?)*(\d+\.\d*)?)*$/);
-const sciCalcRegex = new RegExp(/^(([0-9]+[-+/*%^]?)*(\d+\.\d*)?)*$/);
+const sciCalcRegex = new RegExp(/^(([0-9]+([-+/%]|\*{1,2})?)*(\d+\.\d*)?)*$/);
 const version = '4.0.0'
 
 class Application {
@@ -129,25 +129,37 @@ document.addEventListener("DOMContentLoaded", () => {
         lightBts.addEventListener('click', () => Application.changeLight());
         infoBtn.addEventListener('click', () => Application.showPopup());
         infoBtn.addEventListener('focusout', () => Application.closePopup());
-        document.getElementById('equal').addEventListener('click', () => myEval());
         input.addEventListener('pointerdown', () => {
             Calculator.reset();
         });
-
-        // // Catches all button clicks on the page
         buttons.forEach(btn => {
-            btn.addEventListener('pointerdown', (event) => {
+            btn.addEventListener('pointerdown', () => {
                 if (input != document.activeElement) {
-                    Calculator.processButton(event.target);
+                    Calculator.processButton(btn, Application.scientificMode, Application.remoteLocation);
                 }
             });
         });
-        //
-        // document.getElementsByClassName('calc-history-eq')[0].addEventListener('click',(event)=> {
-        //     let tokens = Calculator.calcHistory[parseInt(event.target).attr("id").substring(2))].tokens();
-        //     Calculator.tokenList = tokens;
-        //     Calculator.displayEquation();
-        // });
+
+        document.addEventListener('keydown', event => {
+            buttons.forEach(btn => {
+                if (input != document.activeElement) {
+                    if (btn.innerHTML === event.key) {
+                        btn.classList.add('key-board-down');
+                        Calculator.processButton(btn, Application.scientificMode, Application.remoteLocation);
+                    }
+                }
+            });
+        });
+
+        document.addEventListener('keyup', event => {
+            buttons.forEach(btn => {
+                if (input != document.activeElement) {
+                    if (btn.innerHTML === event.key) {
+                        btn.classList.remove('key-board-down');
+                    }
+                }
+            });
+        });
 
         async function fetchWithTimeout(url, timeout = 2000) {
             const controller = new AbortController();
@@ -171,70 +183,24 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        async function myEval() {
-            if (Application.remoteLocation == true) {
-                return await this.remoteEval();
-            } else {
-                if (Application.scientificMode) {
-                    // Calculator.scientificEval(input.value);
-                } else {
-                    // Calculator.standardEval(input.value);
-                }
-            }
-        }
-
         input.oninput = function () {
             let typedInput: string = input.value;
-            // if (this.scientificMode) {
-            //     if (sciCalcRegex.test(typedInput) == false) {
-            //         input.value = typedInput.slice(0, -1);
-            //         window.alert('Input is not legal!');
-            //     }
-            // } else {
-            //     if (standCalcRegex.test(typedInput) == false) {
-            //         input.value = typedInput.slice(0, -1);
-            //         window.alert('Input is not legal!');
-            //     }
-            // }
+            if (Application.scientificMode) {
+                if (sciCalcRegex.test(typedInput) == false) {
+                    input.value = typedInput.slice(0, -1);
+                    window.alert('Input is not legal!');
+                }
+            } else {
+                if (standCalcRegex.test(typedInput) == false) {
+                    input.value = typedInput.slice(0, -1);
+                    window.alert('Input is not legal!');
+                }
+            }
         };
-//not working!!
-// input.addEventListener('focusout', () => {
-//     const mathEqu = input.value;
-//     for (let i = 0; i < mathEqu.length; i++) {
-//         Calculator.myEval(mathEqu[i])
-//     }
-// });
 
-        // buttons.forEach(btn => {
-        //     btn.addEventListener('pointerdown', () => {
-        //         if (input != document.activeElement) {
-        //             Calculator.myEval(btn.innerHTML);
-        //         }
-        //     });
-        // });
-        //
-        // document.addEventListener('keydown', event => {
-        //     buttons.forEach(btn => {
-        //         if (input != document.activeElement) {
-        //             if (btn.innerHTML === event.key) {
-        //                 btn.classList.add('key-board-down');
-        //                 Calculator.myEval(event.key)
-        //             }
-        //         }
-        //     });
-        // });
-        //
-        // document.addEventListener('keyup', event => {
-        //     buttons.forEach(btn => {
-        //         if (input != document.activeElement) {
-        //             if (btn.innerHTML === event.key) {
-        //                 btn.classList.remove('key-board-down');
-        //             }
-        //         }
-        //     });
-        // });
-        //
-        // document.getElementById('backspace').addEventListener('click', () => Calculator.backSpace());
-
+        input.addEventListener('focusout', () => {
+            const mathEqu = input.value;
+            input.value = eval(mathEqu);
+        });
     }
 });
