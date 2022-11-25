@@ -1,6 +1,5 @@
 import {Calculator} from "./Calculator.js";
 
-const log = document.querySelector('textarea');
 const fonts = document.querySelectorAll('option');
 const input = document.querySelector('input');
 const buttons = document.querySelectorAll('.number, .operator');
@@ -16,15 +15,20 @@ const sciCalcRegex = new RegExp(/^(([0-9]+([-+/%]|\*{1,2})?)*(\d+\.\d*)?)*$/);
 const version = '4.0.0'
 
 class Application {
+    // toggle variables
     public static scientificMode = true;
     private static displayHistory = true;
     public static remoteLocation = false;
     private static lightOn = false;
+    //config style variables
     private static theme = 'light';
     private static color: string;
     private static font: string;
 
-    static indexPageLoaded(): void {
+    /**
+     * reset calculator and implement config style
+     */
+    public static indexPageLoaded(): void {
         Calculator.reset();
         const queryString = window.location.search;
         if (queryString != '') {
@@ -46,15 +50,26 @@ class Application {
         }
     }
 
-    static configPageLoaded(): void {
+    /**
+     *change fonts in fonts select tag from config.html
+     */
+    public static configPageLoaded(): void {
         fonts.forEach(font => font.style.fontFamily = font.value);
     }
 
-    private static changeToggle(element): void {
+    /**
+     * implement button clicked style on element
+     * @param element
+     * @private
+     */
+    private static changeToggle(element: HTMLElement): void {
         element.classList.toggle("change-toggle");
     }
 
-    static changeLight(): void {
+    /**
+     * light on/off for calculator-screen
+     */
+    public static changeLight(): void {
         document.body.classList.toggle("light-screen");
         this.lightOn = !this.lightOn;
         if (this.lightOn === true) {
@@ -65,7 +80,10 @@ class Application {
         this.changeToggle(lightBts)
     }
 
-    static changeHistoryMode(): void {
+    /**
+     * hide/show history
+     */
+    public static changeHistoryMode(): void {
         document.body.classList.toggle('hide-history');
         this.displayHistory = !this.displayHistory;
         if (this.displayHistory === true) {
@@ -76,7 +94,10 @@ class Application {
         this.changeToggle(historyBtn)
     }
 
-    static changeCalcMode(): void {
+    /**
+     *hide/show scientific calculator
+     */
+    public static changeCalcMode(): void {
         Calculator.reset();
         document.body.classList.toggle('hide-scientific');
         const elementPic = document.getElementById('calcModePic');
@@ -90,7 +111,10 @@ class Application {
         }
     }
 
-    static changeLocationMode(): void {
+    /**
+     *change to local or remote calculation mode
+     */
+    public static changeLocationMode(): void {
         const element = document.getElementById('location');
         this.remoteLocation = !this.remoteLocation;
         if (this.remoteLocation === true) {
@@ -101,19 +125,29 @@ class Application {
         this.changeToggle(element)
     }
 
-    static showPopup(): void {
+    /**
+     * show info popup
+     */
+    public static showPopup(): void {
         infoBtn.classList.add('change-toggle');
         popup.classList.add('show-popup');
         calculator.classList.add('blur');
     }
 
-    static closePopup(): void {
+    /**
+     * close info popup
+     */
+    public static closePopup(): void {
         infoBtn.classList.remove('change-toggle');
         popup.classList.remove('show-popup');
         calculator.classList.remove('blur');
     }
 
-    static handelBtnClick(btn) {
+    /**
+     * handle button click correctly to the current mode
+     * @param btn
+     */
+    public static handelBtnClick(btn: Element) {
         if (input != document.activeElement) {
             Calculator.processButton(btn, this.scientificMode, this.remoteLocation);
         }
@@ -121,29 +155,40 @@ class Application {
             Calculator.reset();
         }
         if (btn.id == 'equal' && this.remoteLocation) {
-            this.foo().then();
+            this.displayRemoteCalc().then();
         }
     }
 
-    static async foo() {
+    private static async displayRemoteCalc() {
         const expression = input.value;
         const out = await this.remoteEval();
         Calculator.output(expression, out);
     }
 
-    static handleKeyDownBtn(btn, event): void {
+    /**
+     * handle key down correctly to the current mode
+     * implement button clicked style btn
+     * @param btn
+     * @param event
+     */
+    public static handleKeyDownBtn(btn: Element, event: KeyboardEvent): void {
         if (input != document.activeElement) {
             if (btn.innerHTML === event.key) {
                 btn.classList.add('key-board-down');
                 Calculator.processButton(btn, this.scientificMode, this.remoteLocation);
                 if (event.key == '=' && this.remoteLocation) {
-                    this.foo().then();
+                    this.displayRemoteCalc().then();
                 }
             }
         }
     }
 
-    static handleKeyUpBtn(btn, event): void {
+    /**
+     * remove button clicked style btn after key up
+     * @param btn
+     * @param event
+     */
+    public static handleKeyUpBtn(btn: Element, event: KeyboardEvent): void {
         if (input != document.activeElement) {
             if (btn.innerHTML === event.key) {
                 btn.classList.remove('key-board-down');
@@ -151,7 +196,11 @@ class Application {
         }
     }
 
-    static handleInputInsert(): void {
+    /**
+     *handle input value
+     * when input value not valid show alert and delete the char
+     */
+    public static handleInputInsert(): void {
         let typedInput: string = input.value;
         if (this.scientificMode) {
             if (sciCalcRegex.test(typedInput) == false) {
@@ -166,13 +215,21 @@ class Application {
         }
     }
 
-    //when input out of focus
-    static calculateByInputInsert(): void {
+    /**
+     * calculate result from input insert when input out of focus
+     */
+    public static calculateByInputInsert(): void {
         const mathEqu = input.value;
         input.value = eval(mathEqu);
     }
 
-    static async fetchWithTimeout(url, timeout = 2000) {
+    /**
+     *  improved version of fetch() that creates requests with a configurable timeout
+     * @param url
+     * @param timeout
+     * @private
+     */
+    private static async fetchWithTimeout(url: string, timeout = 2000) {
         const controller = new AbortController();
         const id = setTimeout(() => controller.abort(), timeout);
         const response = await fetch(url, {
@@ -182,7 +239,12 @@ class Application {
         return response;
     }
 
-    static async remoteEval() {
+    /**
+     * calculate result when on remote mose
+     * catch error when timeout or response return error
+     * @private
+     */
+    private static async remoteEval() {
         try {
             const url = `https://api.mathjs.org/v4/?expr=${encodeURIComponent(input.value)}`;
             const response = await this.fetchWithTimeout(url);
@@ -196,6 +258,9 @@ class Application {
     }
 }
 
+/**
+ * load page for each htmls page
+ */
 document.addEventListener("DOMContentLoaded", () => {
     const url = document.location.href;
     if (url.search('config.html') != -1) {

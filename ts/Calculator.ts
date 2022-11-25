@@ -1,12 +1,15 @@
 export class Calculator {
     private static input = document.querySelector('input');
     private static history = document.querySelectorAll('.calc-history-box');
+    // variables for standard calculate
     private static currentValue = '';
     private static firstOperand = '';
     private static secondOperand = '';
     private static operator = '';
     private static waitingForSecondOperand = false;
-    private static operators = [
+    private static expression = ''
+    // all operators
+    private static operators: { id: string, numOperands: number, symbol: string, calc: (a: number, b?: number) => number }[] = [
 
         {
             id: "op-factorial",
@@ -113,13 +116,12 @@ export class Calculator {
             }
         }
     ];
-    private static expression = ''
     // The number of places to round to
     private static roundPlaces = 2;
     // A list of every token (number or operator) currently in the expression
-    private static tokenList = [];
-    // A list of previous results and expressions in the form {out: output, expression: expression string, tokens: list of tokens in the expression}
-    private static calcHistory = [];
+    private static tokenList: any[] = [];
+    // A list of previous results and expressions in the form {out: output, expression: expression string}
+    private static calcHistory: { out: string, expression: string }[] = [];
 
     public static reset(): void {
         this.waitingForSecondOperand = false;
@@ -127,11 +129,15 @@ export class Calculator {
         this.expression = this.currentValue = this.firstOperand = this.secondOperand = this.operator = this.input.value = '';
     }
 
-    /**
+    /********************************
      * scientific calculate functions
-     **/
-    // Get the operator object for a given operator ID
-    private static getOperator(opID) {
+     ********************************/
+    /**
+     * Get the operator object for a given operator ID
+     * @param opID
+     * @private
+     */
+    private static getOperator(opID: string) {
         for (let i = 0; i < this.operators.length; i++) {
             if (this.operators[i].id === opID) {
                 return this.operators[i];
@@ -140,8 +146,12 @@ export class Calculator {
         return undefined;
     }
 
-    // Get the precedence of an operator given its ID
-    private static getOpPrecedence(opID) {
+    /**
+     * Get the precedence of an operator given its ID
+     * @param opID
+     * @private
+     */
+    private static getOpPrecedence(opID: string): number {
         for (let i = 0; i < this.operators.length; i++) {
             if (this.operators[i].id === opID) {
                 return i;
@@ -151,15 +161,23 @@ export class Calculator {
         return 1000;
     }
 
-    // Returns true if op1 ID has equal or higher precedence than op2 ID, false otherwise
-    private static hasPrecedence(op1, op2) {
+    /**
+     * Returns true if op1 ID has equal or higher precedence than op2 ID, false otherwise
+     * @param op1
+     * @param op2
+     * @private
+     */
+    private static hasPrecedence(op1: string, op2: string): boolean {
         if (this.getOperator(op1) != undefined) {
             return this.getOpPrecedence(op1) <= this.getOpPrecedence(op2);
         }
     }
 
-    // Evaluates the expression and outputs the result
-    private static scientificCalculate() {
+    /**
+     * Evaluates the expression and outputs the result
+     * @private
+     */
+    private static scientificCalculate(): void {
         // Evaluate the expression using a modified version of the shunting yard algorithm
         let valStack = [];
         let opStack = [];
@@ -191,8 +209,10 @@ export class Calculator {
         this.output(this.input.value, valStack[0]);
     }
 
-    // Returns the result of applying the given unary or binary operator on the top values of the value stack
-    private static applyOperator(operator, vals) {
+    /**
+     * Returns the result of applying the given unary or binary operator on the top values of the value stack
+     */
+    private static applyOperator(operator, vals: string[]): number {
         let valA = vals[0];
         let result;
         if (vals.length === 1) {
@@ -204,8 +224,12 @@ export class Calculator {
         return result;
     }
 
-    // Adds a token to the token list and updates the display
-    private static addToken(token) {
+    /**
+     * Adds a token to the token list and updates the display
+     * @param token
+     * @private
+     */
+    private static addToken(token): void {
         if (isNaN(token)) {
             //for expression like 3pi
             if (token === "num-pi" && !isNaN(this.tokenList[this.tokenList.length - 1])) {
@@ -228,8 +252,12 @@ export class Calculator {
         this.displayEquation();
     }
 
-    // Updates the input
-    private static displayEquation() {
+
+    /**
+     * Updates the input
+     * @private
+     */
+    private static displayEquation(): void {
         let htmlString = "";
         for (let i = 0; i < this.tokenList.length; i++) {
             if (isNaN(this.tokenList[i])) {
@@ -245,8 +273,10 @@ export class Calculator {
         this.input.value = htmlString;
     }
 
-    // Deletes the last entered token
-    private static deleteLast() {
+    /**
+     * Deletes the last entered token
+     */
+    private static deleteLast(): void {
         if (isNaN(this.tokenList[this.tokenList.length - 1])) {
             this.tokenList.pop();
         } else {
@@ -258,13 +288,23 @@ export class Calculator {
         this.displayEquation();
     }
 
-    /**
+    /******************************
      * standard calculate functions
-     **/
+     ******************************/
+    /**
+     * return true if cher is operator
+     * @param char
+     * @private
+     */
     private static isOperator(char: string): boolean {
         return char == '+' || char == '-' || char == '×' || char == '÷';
     }
 
+    /**
+     * Evaluates the expression and outputs the result in the input field
+     * @param char
+     * @private
+     */
     private static standardCalculate(char: string): void {
         if (char == '=') {
             let out = eval(this.firstOperand + this.operator + this.secondOperand);
@@ -297,6 +337,9 @@ export class Calculator {
         }
     }
 
+    /**
+     * Deletes the last entered char and calculate again as the enter input
+     */
     private static backSpace(): void {
         const newStrInput = this.expression.slice(0, this.expression.length - 1);
         this.reset();
@@ -305,11 +348,15 @@ export class Calculator {
         }
     }
 
-    /**
+    /***************************
      *both functions calculators
+     **************************/
+    /**
+     * Updates the equation and calc history
+     * @param expression
+     * @param out
      */
-    // Updates the equation and calc history
-    public static output(expression, out) {
+    public static output(expression: string, out) {
         if (!Number.isInteger(out)) {
             out = out.toFixed(this.roundPlaces);
         }
@@ -330,8 +377,13 @@ export class Calculator {
         }
     }
 
-    // Triggers the appropriate action for each button that can be pressed
-    public static processButton(button, scientificMode, remoteLocation) {
+    /**
+     * Triggers the appropriate action for each button that can be pressed be the current mode of the calculator
+     * @param button
+     * @param scientificMode
+     * @param remoteLocation
+     */
+    public static processButton(button: Element, scientificMode: boolean, remoteLocation: boolean) {
         switch (button.id) {
             case "backspace":
                 if (scientificMode || remoteLocation) {
@@ -388,7 +440,6 @@ export class Calculator {
                 } else {
                     this.standardCalculate(button.innerHTML)
                 }
-
         }
     }
 }
