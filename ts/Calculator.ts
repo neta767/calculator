@@ -266,7 +266,6 @@ export class Calculator {
     }
 
     private static standardCalculate(char: string): void {
-        console.log(char, this.expression)
         if (char == '=') {
             let out = eval(this.firstOperand + this.operator + this.secondOperand);
             this.output(this.expression, out)
@@ -307,10 +306,10 @@ export class Calculator {
     }
 
     /**
-     *both calculator functions
+     *both functions calculators
      */
     // Updates the equation and calc history
-    private static output(expression, out) {
+    public static output(expression, out) {
         if (!Number.isInteger(out)) {
             out = out.toFixed(this.roundPlaces);
         }
@@ -346,17 +345,14 @@ export class Calculator {
                     if (this.tokenList.length === 0) {
                         this.calcHistory.length = 0;
                         this.history.forEach(elem => elem.innerHTML = '');
-                    } else {
-                        this.reset();
-                        this.displayEquation();
                     }
                 } else {
                     if (this.expression === '') {
                         this.calcHistory.length = 0;
                         this.history.forEach(elem => elem.innerHTML = '');
-                    } else {
-                        this.reset();
                     }
+                    this.displayEquation();
+
                 }
                 break;
             case "period":

@@ -112,6 +112,88 @@ class Application {
         popup.classList.remove('show-popup');
         calculator.classList.remove('blur');
     }
+
+    static handelBtnClick(btn) {
+        if (input != document.activeElement) {
+            Calculator.processButton(btn, this.scientificMode, this.remoteLocation);
+        }
+        if (btn.id == 'clear') {
+            Calculator.reset();
+        }
+        if (btn.id == 'equal' && this.remoteLocation) {
+            this.foo().then();
+        }
+    }
+
+    static async foo() {
+        const expression = input.value;
+        const out = await this.remoteEval();
+        Calculator.output(expression, out);
+    }
+
+    static handleKeyDownBtn(btn, event): void {
+        if (input != document.activeElement) {
+            if (btn.innerHTML === event.key) {
+                btn.classList.add('key-board-down');
+                Calculator.processButton(btn, this.scientificMode, this.remoteLocation);
+                if (event.key == '=' && this.remoteLocation) {
+                    this.foo().then();
+                }
+            }
+        }
+    }
+
+    static handleKeyUpBtn(btn, event): void {
+        if (input != document.activeElement) {
+            if (btn.innerHTML === event.key) {
+                btn.classList.remove('key-board-down');
+            }
+        }
+    }
+
+    static handleInputInsert(): void {
+        let typedInput: string = input.value;
+        if (this.scientificMode) {
+            if (sciCalcRegex.test(typedInput) == false) {
+                input.value = typedInput.slice(0, -1);
+                window.alert('Input is not legal!');
+            }
+        } else {
+            if (standCalcRegex.test(typedInput) == false) {
+                input.value = typedInput.slice(0, -1);
+                window.alert('Input is not legal!');
+            }
+        }
+    }
+
+    //when input out of focus
+    static calculateByInputInsert(): void {
+        const mathEqu = input.value;
+        input.value = eval(mathEqu);
+    }
+
+    static async fetchWithTimeout(url, timeout = 2000) {
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeout);
+        const response = await fetch(url, {
+            signal: controller.signal
+        });
+        clearTimeout(id);
+        return response;
+    }
+
+    static async remoteEval() {
+        try {
+            const url = `https://api.mathjs.org/v4/?expr=${encodeURIComponent(input.value)}`;
+            const response = await this.fetchWithTimeout(url);
+            const data = await response.json();
+            return data;
+        } catch (e) {
+            if (confirm('Something went wrong. Would you like to change to local mode?')) {
+                this.changeLocationMode();
+            }
+        }
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -122,6 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (url.search('help.html') != -1) {
         document.getElementsByTagName('code')[0].innerHTML = version;
     } else {
+        // when on index.html
         Application.indexPageLoaded();
         historyBtn.addEventListener('click', () => Application.changeHistoryMode());
         calcModeBtn.addEventListener('click', () => Application.changeCalcMode());
@@ -129,78 +212,17 @@ document.addEventListener("DOMContentLoaded", () => {
         lightBts.addEventListener('click', () => Application.changeLight());
         infoBtn.addEventListener('click', () => Application.showPopup());
         infoBtn.addEventListener('focusout', () => Application.closePopup());
-        input.addEventListener('pointerdown', () => {
-            Calculator.reset();
-        });
+        input.addEventListener('pointerdown', () => Calculator.reset());
         buttons.forEach(btn => {
-            btn.addEventListener('pointerdown', () => {
-                if (input != document.activeElement) {
-                    Calculator.processButton(btn, Application.scientificMode, Application.remoteLocation);
-                }
-            });
+            btn.addEventListener('pointerdown', () => Application.handelBtnClick(btn));
         });
-
         document.addEventListener('keydown', event => {
-            buttons.forEach(btn => {
-                if (input != document.activeElement) {
-                    if (btn.innerHTML === event.key) {
-                        btn.classList.add('key-board-down');
-                        Calculator.processButton(btn, Application.scientificMode, Application.remoteLocation);
-                    }
-                }
-            });
+            buttons.forEach(btn => Application.handleKeyDownBtn(btn, event));
         });
-
         document.addEventListener('keyup', event => {
-            buttons.forEach(btn => {
-                if (input != document.activeElement) {
-                    if (btn.innerHTML === event.key) {
-                        btn.classList.remove('key-board-down');
-                    }
-                }
-            });
+            buttons.forEach(btn => Application.handleKeyUpBtn(btn, event));
         });
-
-        async function fetchWithTimeout(url, timeout = 2000) {
-            const controller = new AbortController();
-            const id = setTimeout(() => controller.abort(), timeout);
-            clearTimeout(id);
-            return await fetch(url, {
-                signal: controller.signal
-            });
-        }
-
-        async function remoteEval() {
-            try {
-                const url = `https://api.mathjs.org/v4/?expr=${encodeURIComponent(input.value)}`;
-                const response = await this.fetchWithTimeout(url);
-                const data = await response.text();
-                input.value = data;
-            } catch (e) {
-                if (confirm('Something went wrong. Would you like to change to local?')) {
-                    Application.changeLocationMode();
-                }
-            }
-        }
-
-        input.oninput = function () {
-            let typedInput: string = input.value;
-            if (Application.scientificMode) {
-                if (sciCalcRegex.test(typedInput) == false) {
-                    input.value = typedInput.slice(0, -1);
-                    window.alert('Input is not legal!');
-                }
-            } else {
-                if (standCalcRegex.test(typedInput) == false) {
-                    input.value = typedInput.slice(0, -1);
-                    window.alert('Input is not legal!');
-                }
-            }
-        };
-
-        input.addEventListener('focusout', () => {
-            const mathEqu = input.value;
-            input.value = eval(mathEqu);
-        });
+        input.oninput = () => Application.handleInputInsert();
+        input.addEventListener('focusout', () => Application.calculateByInputInsert());
     }
 });
