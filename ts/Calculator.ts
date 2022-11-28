@@ -1,6 +1,9 @@
+// remote->pi,pow()
+const getOperandRegex = new RegExp(/^(([0-9]+([-+÷×^!%√]|\*√)?)*(\d+\.\d*)?)*$/);
+
 export class Calculator {
     private static input = document.querySelector('input');
-    private static history = document.querySelectorAll('.calc-history-box');
+    private static history = document.querySelectorAll('.calc-history-log');
     // variables for standard calculate
     private static currentValue = '';
     private static firstOperand = '';
@@ -8,9 +11,10 @@ export class Calculator {
     private static operator = '';
     private static waitingForSecondOperand = false;
     private static expression = ''
+// const sciCalcRegex = new RegExp(/^(([0-9]+([-+/%]|\*{1,2})?)*(\d+\.\d*)?)*$/);
+    // Array.from(srt.matchAll(/([\d.])+([-+*/]?)/g));
     // all operators
     private static operators: { id: string, numOperands: number, symbol: string, calc: (a: number, b?: number) => number }[] = [
-
         {
             id: "op-factorial",
             numOperands: 1,
@@ -38,7 +42,7 @@ export class Calculator {
         {
             id: "op-squared",
             numOperands: 1,
-            symbol: "^2",
+            symbol: "^",
             calc: function (a) {
                 return Math.pow(a, 2);
             }
@@ -78,7 +82,7 @@ export class Calculator {
         {
             id: "op-multiply",
             numOperands: 2,
-            symbol: "*",
+            symbol: "×",
             calc: function (a, b) {
                 return a * b;
             }
@@ -94,7 +98,7 @@ export class Calculator {
         {
             id: "op-divide",
             numOperands: 2,
-            symbol: "/",
+            symbol: "÷",
             calc: function (a, b) {
                 return a / b;
             }
@@ -384,62 +388,63 @@ export class Calculator {
      * @param remoteLocation
      */
     public static processButton(button: Element, scientificMode: boolean, remoteLocation: boolean) {
-        switch (button.id) {
-            case "backspace":
-                if (scientificMode || remoteLocation) {
-                    this.deleteLast();
-                } else {
-                    this.backSpace();
-                }
-                break;
-            case "clear":
-                if (scientificMode || remoteLocation) {
-                    if (this.tokenList.length === 0) {
-                        this.calcHistory.length = 0;
-                        this.history.forEach(elem => elem.innerHTML = '');
-                    }
-                } else {
-                    if (this.expression === '') {
-                        this.calcHistory.length = 0;
-                        this.history.forEach(elem => elem.innerHTML = '');
-                    }
-                    this.displayEquation();
-
-                }
-                break;
-            case "period":
-                if (scientificMode || remoteLocation) {
-                    if (isNaN(this.tokenList[this.tokenList.length - 1])) {
-                        this.addToken("0.");
-                    } else {
-                        if (this.tokenList[this.tokenList.length - 1].indexOf(".") === -1) {
-                            this.tokenList[this.tokenList.length - 1] += ".";
-                        }
-                    }
-                    this.displayEquation();
-                } else {
-                    this.standardCalculate(button.innerHTML)
-                }
-                break;
-            case "equal":
-                if (!remoteLocation) {
-                    if (scientificMode) {
-                        this.scientificCalculate();
-                    } else {
-                        this.standardCalculate(button.innerHTML);
-                    }
-                }
-                break;
-            default:
-                if (scientificMode || remoteLocation) {
-                    if (button.classList.contains("number")) {
-                        this.addToken(button.innerHTML);
-                    } else {
-                        this.addToken(button.id);
-                    }
-                } else {
-                    this.standardCalculate(button.innerHTML)
-                }
-        }
+        // if()
+        // switch (button.id) {
+        //     case "backspace":
+        //         if (scientificMode || remoteLocation) {
+        //             this.deleteLast();
+        //         } else {
+        //             this.backSpace();
+        //         }
+        //         break;
+        //     case "clear":
+        //         if (scientificMode || remoteLocation) {
+        //             if (this.tokenList.length === 0) {
+        //                 this.calcHistory.length = 0;
+        //                 this.history.forEach(elem => elem.innerHTML = '');
+        //             }
+        //         } else {
+        //             if (this.expression === '') {
+        //                 this.calcHistory.length = 0;
+        //                 this.history.forEach(elem => elem.innerHTML = '');
+        //             }
+        //             this.displayEquation();
+        //
+        //         }
+        //         break;
+        //     case "period":
+        //         if (scientificMode || remoteLocation) {
+        //             if (isNaN(this.tokenList[this.tokenList.length - 1])) {
+        //                 this.addToken("0.");
+        //             } else {
+        //                 if (this.tokenList[this.tokenList.length - 1].indexOf(".") === -1) {
+        //                     this.tokenList[this.tokenList.length - 1] += ".";
+        //                 }
+        //             }
+        //             this.displayEquation();
+        //         } else {
+        //             this.standardCalculate(button.innerHTML)
+        //         }
+        //         break;
+        //     case "equal":
+        //         if (!remoteLocation) {
+        //             if (scientificMode) {
+        //                 this.scientificCalculate();
+        //             } else {
+        //                 this.standardCalculate(button.innerHTML);
+        //             }
+        //         }
+        //         break;
+        //     default:
+        //         if (scientificMode || remoteLocation) {
+        //             if (button.classList.contains("number")) {
+        //                 this.addToken(button.innerHTML);
+        //             } else {
+        //                 this.addToken(button.id);
+        //             }
+        //         } else {
+        //             this.standardCalculate(button.innerHTML)
+        //         }
+        // }
     }
 }

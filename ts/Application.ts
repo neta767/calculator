@@ -1,15 +1,15 @@
 import {Calculator} from "./Calculator.js";
 
 const fonts = document.querySelectorAll('option');
-const input = document.querySelector('input');
+const input = document.getElementById('calculator-screen') as HTMLInputElement;
 const buttons = document.querySelectorAll('.number, .operator');
-const historyBtn = document.getElementById('history');
-const calcModeBtn = document.getElementById('calcMode');
-const locationModeBtn = document.getElementById('location');
-const lightBts = document.getElementById('light');
-const infoBtn = document.getElementById('info');
-const popup = document.getElementById("popup");
-const calculator = document.getElementsByClassName('calculator')[0];
+const historyBtn = document.getElementById('history') as HTMLButtonElement;
+const calcModeBtn = document.getElementById('calcMode') as HTMLButtonElement;
+const locationModeBtn = document.getElementById('location') as HTMLButtonElement;
+const lightBts = document.getElementById('light') as HTMLButtonElement;
+const infoBtn = document.getElementById('info') as HTMLButtonElement;
+const popup = document.getElementById("popup") as HTMLButtonElement;
+const calculator = document.querySelector('.calculator');
 const standCalcRegex = new RegExp(/^(([0-9]+[-+/*]?)*(\d+\.\d*)?)*$/);
 const sciCalcRegex = new RegExp(/^(([0-9]+([-+/%]|\*{1,2})?)*(\d+\.\d*)?)*$/);
 const version = '4.0.0'
@@ -63,7 +63,7 @@ class Application {
      * @private
      */
     private static changeToggle(element: HTMLElement): void {
-        element.classList.toggle("change-toggle");
+        element.classList.toggle("key-board-down");
     }
 
     /**
@@ -129,7 +129,7 @@ class Application {
      * show info popup
      */
     public static showPopup(): void {
-        infoBtn.classList.add('change-toggle');
+        infoBtn.classList.add('key-board-down');
         popup.classList.add('show-popup');
         calculator.classList.add('blur');
     }
@@ -138,7 +138,7 @@ class Application {
      * close info popup
      */
     public static closePopup(): void {
-        infoBtn.classList.remove('change-toggle');
+        infoBtn.classList.remove('key-board-down');
         popup.classList.remove('show-popup');
         calculator.classList.remove('blur');
     }
@@ -267,7 +267,7 @@ document.addEventListener("DOMContentLoaded", () => {
         Application.configPageLoaded();
 
     } else if (url.search('help.html') != -1) {
-        document.getElementsByTagName('code')[0].innerHTML = version;
+        document.querySelector('code').innerHTML = version;
     } else {
         // when on index.html
         Application.indexPageLoaded();

@@ -10,52 +10,50 @@
 <body>
 <div class="calculator">
     <div class="history">
-        <div>
-            <img src="img/history.png">
-            <h2>Operation log</h2>
-        </div>
-        <div id="calc-history-box">
-            <div class="calc-history-box"><p></p></div>
+        <img src="img/history.png">
+        <h2>Operation log</h2>
+        <div class="calc-history-box">
+            <div class="calc-history-log">
+                <div>There's no history yet</div>
+            </div>
+            <input type="image" id="clear-log" src="img/trash-can.png">
         </div>
     </div>
     <div class="calculator-keys">
-        <button id="info" title="information"><img src="img/information.png"></button>
+        <input type="image" id="info" title="information" src="img/information.png" class="mode">
         <h2>My Calculator</h2>
-        <a href="./html/config.html">
-            <button title="style"><img src="img/setting.png"></button>
-        </a>
+        <input type="image" title="style" src="img/setting.png" class="mode" onclick="location.href='html/config.html'">
 
-        <button id="light" title="light on"><img src="img/light-bulb.png"></button>
-        <input type="text" class="calculator-screen"/>
-        <button id="backspace" class="operator" title="delete">←</button>
+        <input type="image" id="light" title="light on" src="img/light-bulb.png" class="mode">
+        <input type="text" id="calculator-screen"/>
+        <input type="image" id="backspace" class="operator" title="delete" value="←" src="img/backspace.png">
 
+        <!--should be input input type=button!!...-->
+        <input type="image" id="history" title="hide history" class="mode" src="img/history.png">
+        <input type="button" class="all-clear operator" id="clear" value="AC">
+        <input type="button" class="operator" id="op-divide" value="÷">
 
-        <button id="history" title="hide history" class="change-toggle"><img
-                src="img/history.png"></button>
-        <button class="all-clear operator" id="clear">AC</button>
-        <button class="operator" id="op-divide">÷</button>
+        <input type="image" id="calcMode" title="standard" src="img/calculator.png" class="mode">
+        <input type="button" class="number" value="7">
+        <input type="button" class="number" value="8">
+        <input type="button" class="number" value="9">
+        <input type="button" class="operator" value="×">
 
-        <button id="calcMode" title="standard"><img src="img/calculator.png" id="calcModePic"></button>
-        <button class="number" id="num-7">7</button>
-        <button class="number" id="num-8">8</button>
-        <button class="number" id="num-9">9</button>
-        <button class="operator" id="op-multiply">×</button>
+        <input type="image" id="location" title="remote" src="img/remote.png" class="mode">
+        <input type="button" class="number" value="4">
+        <input type="button" class="number" value="5">
+        <input type="button" class="number" value="6">
+        <input type="button" class="operator" value="-">
 
-        <button id="location" title="remote"><img src="img/remote.png"></button>
-        <button class="number" id="num-4">4</button>
-        <button class="number" id="num-5">5</button>
-        <button class="number" id="num-6">6</button>
-        <button class="operator" id="op-subtract">-</button>
+        <input type="button" class="number row-start-2" value="1">
+        <input type="button" class="number" value="2">
+        <input type="button" class="number" value="3">
+        <input type="button" class="operator" value="+">
 
-        <button class="number row-start-2" id="a1">1</button>
-        <button class="number" id="a2">2</button>
-        <button class="number" id="a3">3</button>
-        <button class="operator" id="op-add">+</button>
-
-        <button class="row-start-2 operator" id="op-negate">±</button>
-        <button class="number" id="num-0">0</button>
-        <button class="number" id="period">.</button>
-        <button class="operator" id="equal">=</button>
+        <input type="button" class="row-start-2 operator" value="±">
+        <input type="button" class="number" value="0">
+        <input type="button" class="number" value=".">
+        <input type="button" class="operator" value="=">
     </div>
     <div class="scientific">
         <div>
@@ -63,17 +61,17 @@
             <h2>Scientific</h2>
         </div>
         <div class="scientific-keys">
-            <button id="op-modulo" class="operator">%</button>
-            <button id="num-pi" class="operator">π</button>
+            <input type="button" id="op-modulo" class="operator" value="%">
+            <input type="image" id="num-pi" class="operator" value="π" src="img/pi.png">
 
-            <button id="op-squared" class="operator">x^2</button>
-            <button id="op-power" class="operator">x^y</button>
+            <input type="image" id="op-squared" class="operator" value="x^2" src="img/squared.png">
+            <input type="image" id="op-power" class="operator" value="x^y" src="img/power.png">
 
-            <button id="op-square-root" class="operator">√</button>
-            <button id="op-nth-root" class="operator">x*√</button>
-            
-            <button class="base-btn">Base₂</button>
-            <button id="op-factorial" class="operator">!</button>
+            <input type="image" id="op-square-root" class="operator" value="√" src="img/square-root.png">
+            <input type="image" id="op-nth-root" class="operator" value="x*√" src="img/nth-root.png">
+
+            <input type="button" class="base-btn operator" value="Base₂">
+            <input type="button" id="op-factorial" class="operator" value="!">
         </div>
     </div>
 </div>
