@@ -7,7 +7,7 @@ $dark-theme: (
         "c7": #9999997F, //bg-color-action-button
         "c9":#3b3c40, //bg-color-number-button
         "c11":#272727, //box-shadow-number
-        "n1":100%, //invert-img
+        "n1":100%, //invert-assets
 );
 $light-theme: (
         "c1":white, //bg-color
@@ -21,6 +21,6 @@ $light-theme: (
         "c9":#2e86c0, //bg-color-number-button
         "c10":white, //text-color(AC,screen,numbers)
         "c11":#9999997F, //box-shadow-number
-        "n1":0%, //invert-img
+        "n1":0%, //invert-assets
         "font-weight": lighter,
 );

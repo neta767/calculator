@@ -4,44 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculator</title>
-    <link href="img/calculator-icon.png" rel="icon" type="image/x-icon">
-    <link href="scss/calculator-style.css" rel="stylesheet">
+    <link href="assets/calculator-icon.png" rel="icon" type="image/x-icon">
+    <link href="scss/calculator.css" rel="stylesheet">
 </head>
 <body>
 <div class="calculator">
     <div class="history">
         <div>
-            <img src="img/history.png">
+            <img src="assets/history.png">
             <h2>Operation log</h2>
         </div>
-        <div id="calc-history-box">
-            <div class="calc-history-box"><p></p></div>
+        <div class="calc-history-box">
+            <div class="calc-history-log">
+                <div>There's no history yet</div>
+            </div>
+            <button class="trash-can"><img src="assets/trash-can.png"></button>
         </div>
     </div>
     <div class="calculator-keys">
-        <button id="info" title="information"><img src="img/information.png"></button>
+        <button id="info" title="information"><img src="assets/information.png"></button>
         <h2>My Calculator</h2>
-        <a href="./html/config.html">
-            <button title="style"><img src="img/setting.png"></button>
+        <a href="html/config.html">
+            <button title="style"><img src="assets/setting.png"></button>
         </a>
 
-        <button id="light" title="light on"><img src="img/light-bulb.png"></button>
+        <button id="light" title="light on"><img src="assets/light-bulb.png"></button>
         <input type="text" class="calculator-screen"/>
         <button id="backspace" class="operator" title="delete">←</button>
 
-
+        <!--should be input button...-->
         <button id="history" title="hide history" class="change-toggle"><img
-                src="img/history.png"></button>
+                src="assets/history.png"></button>
         <button class="all-clear operator" id="clear">AC</button>
         <button class="operator" id="op-divide">÷</button>
 
-        <button id="calcMode" title="standard"><img src="img/calculator.png" id="calcModePic"></button>
+        <button id="calcMode" title="standard"><img src="assets/calculator.png" id="calcModePic"></button>
         <button class="number" id="num-7">7</button>
         <button class="number" id="num-8">8</button>
         <button class="number" id="num-9">9</button>
         <button class="operator" id="op-multiply">×</button>
 
-        <button id="location" title="remote"><img src="img/remote.png"></button>
+        <button id="location" title="remote"><img src="assets/remote.png"></button>
         <button class="number" id="num-4">4</button>
         <button class="number" id="num-5">5</button>
         <button class="number" id="num-6">6</button>
@@ -59,7 +62,7 @@
     </div>
     <div class="scientific">
         <div>
-            <img src="img/scientific.png"/>
+            <img src="assets/scientific.png"/>
             <h2>Scientific</h2>
         </div>
         <div class="scientific-keys">
@@ -71,7 +74,7 @@
 
             <button id="op-square-root" class="operator">√</button>
             <button id="op-nth-root" class="operator">x*√</button>
-            
+
             <button class="base-btn">Base₂</button>
             <button id="op-factorial" class="operator">!</button>
         </div>
@@ -82,7 +85,7 @@
 </h1>
 </div>
 <script>let exports = {};</script>
-<script type="module" src="ts/Application.js"></script>
-<script src="ts/Calculator.js"></script>
+<script type="module" src="ts/application.js"></script>
+<script type="module" src="ts/calculator.js"></script>
 </body>
 </html>

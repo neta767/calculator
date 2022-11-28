@@ -1,15 +1,15 @@
-import {Calculator} from "./Calculator.js";
+import {Calculator} from "./calculator";
 
-const fonts = document.querySelectorAll('option');
-const input = document.querySelector('input');
-const buttons = document.querySelectorAll('.number, .operator');
-const historyBtn = document.getElementById('history');
-const calcModeBtn = document.getElementById('calcMode');
-const locationModeBtn = document.getElementById('location');
-const lightBts = document.getElementById('light');
-const infoBtn = document.getElementById('info');
-const popup = document.getElementById("popup");
-const calculator = document.getElementsByClassName('calculator')[0];
+const fonts = () => document.querySelectorAll('option');
+const input = () => document.querySelector('input');
+const buttons = () => document.querySelectorAll('.number, .operator');
+const historyBtn = () => document.getElementById('history');
+const calcModeBtn = () => document.getElementById('calcMode');
+const locationModeBtn = () => document.getElementById('location');
+const lightBts = () => document.getElementById('light');
+const infoBtn = () => document.getElementById('info');
+const popup = () => document.getElementById('popup');
+const calculator = () => document.getElementsByClassName('calculator')[0];
 const standCalcRegex = new RegExp(/^(([0-9]+[-+/*]?)*(\d+\.\d*)?)*$/);
 const sciCalcRegex = new RegExp(/^(([0-9]+([-+/%]|\*{1,2})?)*(\d+\.\d*)?)*$/);
 const version = '4.0.0'
@@ -54,7 +54,7 @@ class Application {
      *change fonts in fonts select tag from config.html
      */
     public static configPageLoaded(): void {
-        fonts.forEach(font => font.style.fontFamily = font.value);
+        fonts().forEach(font => font.style.fontFamily = font.value);
     }
 
     /**
@@ -73,11 +73,11 @@ class Application {
         document.body.classList.toggle("light-screen");
         this.lightOn = !this.lightOn;
         if (this.lightOn === true) {
-            lightBts.title = 'light off';
+            lightBts().title = 'light off';
         } else {
-            lightBts.title = 'light on';
+            lightBts().title = 'light on';
         }
-        this.changeToggle(lightBts)
+        this.changeToggle(lightBts())
     }
 
     /**
@@ -87,11 +87,11 @@ class Application {
         document.body.classList.toggle('hide-history');
         this.displayHistory = !this.displayHistory;
         if (this.displayHistory === true) {
-            historyBtn.title = 'hide history';
+            historyBtn().title = 'hide history';
         } else {
-            historyBtn.title = 'show history';
+            historyBtn().title = 'show history';
         }
-        this.changeToggle(historyBtn)
+        this.changeToggle(historyBtn())
     }
 
     /**
@@ -103,11 +103,11 @@ class Application {
         const elementPic = document.getElementById('calcModePic');
         this.scientificMode = !this.scientificMode;
         if (this.scientificMode === true) {
-            elementPic.setAttribute('src', 'img/calculator.png');
-            calcModeBtn.title = 'standard';
+            elementPic.setAttribute('src', 'assets/calculator.png');
+            calcModeBtn().title = 'standard';
         } else {
-            elementPic.setAttribute('src', 'img/scientific.png');
-            calcModeBtn.title = 'scientific';
+            elementPic.setAttribute('src', 'assets/scientific.png');
+            calcModeBtn().title = 'scientific';
         }
     }
 
@@ -129,18 +129,18 @@ class Application {
      * show info popup
      */
     public static showPopup(): void {
-        infoBtn.classList.add('change-toggle');
-        popup.classList.add('show-popup');
-        calculator.classList.add('blur');
+        infoBtn().classList.add('change-toggle');
+        popup().classList.add('show-popup');
+        calculator().classList.add('blur');
     }
 
     /**
      * close info popup
      */
     public static closePopup(): void {
-        infoBtn.classList.remove('change-toggle');
-        popup.classList.remove('show-popup');
-        calculator.classList.remove('blur');
+        infoBtn().classList.remove('change-toggle');
+        popup().classList.remove('show-popup');
+        calculator().classList.remove('blur');
     }
 
     /**
@@ -148,7 +148,7 @@ class Application {
      * @param btn
      */
     public static handelBtnClick(btn: Element) {
-        if (input != document.activeElement) {
+        if (input() != document.activeElement) {
             Calculator.processButton(btn, this.scientificMode, this.remoteLocation);
         }
         if (btn.id == 'clear') {
@@ -160,7 +160,7 @@ class Application {
     }
 
     private static async displayRemoteCalc() {
-        const expression = input.value;
+        const expression = input().value;
         const out = await this.remoteEval();
         Calculator.output(expression, out);
     }
@@ -172,7 +172,7 @@ class Application {
      * @param event
      */
     public static handleKeyDownBtn(btn: Element, event: KeyboardEvent): void {
-        if (input != document.activeElement) {
+        if (input() != document.activeElement) {
             if (btn.innerHTML === event.key) {
                 btn.classList.add('key-board-down');
                 Calculator.processButton(btn, this.scientificMode, this.remoteLocation);
@@ -189,7 +189,7 @@ class Application {
      * @param event
      */
     public static handleKeyUpBtn(btn: Element, event: KeyboardEvent): void {
-        if (input != document.activeElement) {
+        if (input() != document.activeElement) {
             if (btn.innerHTML === event.key) {
                 btn.classList.remove('key-board-down');
             }
@@ -201,15 +201,15 @@ class Application {
      * when input value not valid show alert and delete the char
      */
     public static handleInputInsert(): void {
-        let typedInput: string = input.value;
+        let typedInput: string = input().value;
         if (this.scientificMode) {
             if (sciCalcRegex.test(typedInput) == false) {
-                input.value = typedInput.slice(0, -1);
+                input().value = typedInput.slice(0, -1);
                 window.alert('Input is not legal!');
             }
         } else {
             if (standCalcRegex.test(typedInput) == false) {
-                input.value = typedInput.slice(0, -1);
+                input().value = typedInput.slice(0, -1);
                 window.alert('Input is not legal!');
             }
         }
@@ -219,8 +219,8 @@ class Application {
      * calculate result from input insert when input out of focus
      */
     public static calculateByInputInsert(): void {
-        const mathEqu = input.value;
-        input.value = eval(mathEqu);
+        const mathEqu = input().value;
+        input().value = eval(mathEqu);
     }
 
     /**
@@ -246,7 +246,7 @@ class Application {
      */
     private static async remoteEval() {
         try {
-            const url = `https://api.mathjs.org/v4/?expr=${encodeURIComponent(input.value)}`;
+            const url = `https://api.mathjs.org/v4/?expr=${encodeURIComponent(input().value)}`;
             const response = await this.fetchWithTimeout(url);
             const data = await response.json();
             return data;
@@ -267,27 +267,28 @@ document.addEventListener("DOMContentLoaded", () => {
         Application.configPageLoaded();
 
     } else if (url.search('help.html') != -1) {
+        console.log('hi')
         document.getElementsByTagName('code')[0].innerHTML = version;
     } else {
         // when on index.html
         Application.indexPageLoaded();
-        historyBtn.addEventListener('click', () => Application.changeHistoryMode());
-        calcModeBtn.addEventListener('click', () => Application.changeCalcMode());
-        locationModeBtn.addEventListener('click', () => Application.changeLocationMode());
-        lightBts.addEventListener('click', () => Application.changeLight());
-        infoBtn.addEventListener('click', () => Application.showPopup());
-        infoBtn.addEventListener('focusout', () => Application.closePopup());
-        input.addEventListener('pointerdown', () => Calculator.reset());
-        buttons.forEach(btn => {
+        historyBtn().addEventListener('click', () => Application.changeHistoryMode());
+        calcModeBtn().addEventListener('click', () => Application.changeCalcMode());
+        locationModeBtn().addEventListener('click', () => Application.changeLocationMode());
+        lightBts().addEventListener('click', () => Application.changeLight());
+        infoBtn().addEventListener('click', () => Application.showPopup());
+        infoBtn().addEventListener('focusout', () => Application.closePopup());
+        input().addEventListener('pointerdown', () => Calculator.reset());
+        buttons().forEach(btn => {
             btn.addEventListener('pointerdown', () => Application.handelBtnClick(btn));
         });
         document.addEventListener('keydown', event => {
-            buttons.forEach(btn => Application.handleKeyDownBtn(btn, event));
+            buttons().forEach(btn => Application.handleKeyDownBtn(btn, event));
         });
         document.addEventListener('keyup', event => {
-            buttons.forEach(btn => Application.handleKeyUpBtn(btn, event));
+            buttons().forEach(btn => Application.handleKeyUpBtn(btn, event));
         });
-        input.oninput = () => Application.handleInputInsert();
-        input.addEventListener('focusout', () => Application.calculateByInputInsert());
+        input().oninput = () => Application.handleInputInsert();
+        input().addEventListener('focusout', () => Application.calculateByInputInsert());
     }
 });

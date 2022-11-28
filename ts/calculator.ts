@@ -1,6 +1,6 @@
 export class Calculator {
     private static input = document.querySelector('input');
-    private static history = document.querySelectorAll('.calc-history-box');
+    private static history = document.querySelectorAll('.calc-history-log');
     // variables for standard calculate
     private static currentValue = '';
     private static firstOperand = '';
@@ -10,7 +10,7 @@ export class Calculator {
     private static expression = ''
     // all operators
     private static operators: { id: string, numOperands: number, symbol: string, calc: (a: number, b?: number) => number }[] = [
-
+// Array.from(srt.matchAll(/([\d.])+([-+*/]?)/g));
         {
             id: "op-factorial",
             numOperands: 1,

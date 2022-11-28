@@ -45,7 +45,7 @@ $theme-color: $light-theme;
     width: max-content;
     font-size: 2vw;
   }
-  #calc-history-box {
+  .calc-history-box {
     height: 250px;
   }
 }
@@ -81,7 +81,7 @@ $theme-color: $light-theme;
   .scientific-keys {
     grid-template-columns: repeat(2, 1fr);
   }
-  #calc-history-box {
+  .calc-history-box {
     height: 100%;
   }
 }
@@ -118,7 +118,7 @@ $theme-color: $light-theme;
     background-color: map.get($theme-color, 'c5');
   }
 
-  button {
+  button:not(.trash-can) {
     box-shadow: 0 5px map.get($theme-color, 'c4');
 
     &:not(.number, .all-clear) {
@@ -188,7 +188,7 @@ body {
   }
 }
 
-button {
+button:not(.trash-can) {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -308,7 +308,10 @@ img {
   font-size: 3vh
 }
 
-#calc-history-box {
+.calc-history-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   width: 85%;
   background-color: #636363;
   border-radius: 5px;
@@ -317,10 +320,27 @@ img {
   box-shadow: 0 5px 10px #444444 inset;
   resize: none;
   overflow: hidden;
+  cursor: context-menu;
+}
+
+.calc-history-log {
+  overflow-y: auto;
 }
 
 .calc-history-eq {
   font-weight: bold;
   font-size: 1.5em;
   text-shadow: 0 3px 0 map.get($theme-color, 'c3');
+}
+
+.trash-can {
+  background-color: transparent;
+  border: none;
+  border-radius: 15px;
+  filter: invert(100);
+
+  &:hover {
+    background-color: #6363638D;
+
+  }
 }
