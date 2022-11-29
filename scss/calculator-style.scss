@@ -328,14 +328,19 @@ img {
 }
 
 .calc-history-log {
-  height: calc(85vh - 140px);
+  height: calc(85vh - 110px);
   overflow-y: auto;
+  font-size: 1.1em;
+  margin-left: 2px;
 }
 
 .calc-history-eq {
-  font-weight: bold;
-  font-size: 1.5em;
-  text-shadow: 0 3px 0 map.get($theme-color, 'c3');
+  text-align: left;
+  color: #d1d1d1;
+}
+
+.calc-history-res {
+  text-align: left;
 }
 
 #clear-log {
@@ -346,4 +351,8 @@ img {
   &:hover {
     background-color: #6363638D;
   }
+}
+
+hr {
+  margin-top: 5px;
 }

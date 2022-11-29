@@ -1,15 +1,21 @@
 import {Calculator} from "./Calculator.js";
 
+const mapKeys = {
+    'Enter': '=',
+    '/': '÷',
+    '*': '×',
+}
 const fonts = document.querySelectorAll('option');
 const input = document.getElementById('calculator-screen') as HTMLInputElement;
-const buttons = document.querySelectorAll('.number, .operator');
-const historyBtn = document.getElementById('history') as HTMLButtonElement;
-const calcModeBtn = document.getElementById('calcMode') as HTMLButtonElement;
-const locationModeBtn = document.getElementById('location') as HTMLButtonElement;
-const lightBts = document.getElementById('light') as HTMLButtonElement;
-const infoBtn = document.getElementById('info') as HTMLButtonElement;
-const popup = document.getElementById("popup") as HTMLButtonElement;
+const buttons = document.querySelectorAll('.operator,.number') as NodeListOf<HTMLInputElement>;
+const historyBtn = document.getElementById('history');
+const calcModeBtn = document.getElementById('calcMode');
+const locationModeBtn = document.getElementById('location');
+const lightBts = document.getElementById('light');
+const infoBtn = document.getElementById('info');
+const popup = document.getElementById("popup");
 const calculator = document.querySelector('.calculator');
+const opLogBtn = document.getElementById('op-log') as HTMLButtonElement;
 const standCalcRegex = new RegExp(/^(([0-9]+[-+/*]?)*(\d+\.\d*)?)*$/);
 const sciCalcRegex = new RegExp(/^(([0-9]+([-+/%]|\*{1,2})?)*(\d+\.\d*)?)*$/);
 const version = '4.0.0'
@@ -30,6 +36,7 @@ class Application {
      */
     public static indexPageLoaded(): void {
         Calculator.reset();
+        Calculator.clearHistory();
         const queryString = window.location.search;
         if (queryString != '') {
             const urlParams = new URLSearchParams(queryString);
@@ -39,8 +46,6 @@ class Application {
             document.body.style.backgroundColor = this.color;
             document.body.style.fontFamily = this.font;
             document.querySelectorAll('input').forEach(elem => elem.style.fontFamily = this.font);
-            document.querySelectorAll('button').forEach(elem => elem.style.fontFamily = this.font);
-            document.querySelectorAll('textarea').forEach(elem => elem.style.fontFamily = this.font);
             if (this.theme == 'dark') {
                 document.body.classList.add("dark-mode")
             } else {
@@ -99,20 +104,20 @@ class Application {
      */
     public static changeCalcMode(): void {
         Calculator.reset();
+        Calculator.clearHistory();
         document.body.classList.toggle('hide-scientific');
-        const elementPic = document.getElementById('calcModePic');
         this.scientificMode = !this.scientificMode;
         if (this.scientificMode === true) {
-            elementPic.setAttribute('src', 'img/calculator.png');
+            calcModeBtn.setAttribute('src', 'img/calculator.png');
             calcModeBtn.title = 'standard';
         } else {
-            elementPic.setAttribute('src', 'img/scientific.png');
+            calcModeBtn.setAttribute('src', 'img/scientific.png');
             calcModeBtn.title = 'scientific';
         }
     }
 
     /**
-     *change to local or remote calculation mode
+     *change to local or remote calculation mode and disable op-log button
      */
     public static changeLocationMode(): void {
         const element = document.getElementById('location');
@@ -123,6 +128,9 @@ class Application {
             element.title = 'remote';
         }
         this.changeToggle(element)
+        this.changeToggle(opLogBtn);
+        opLogBtn.style.cursor = 'context-menu';
+        opLogBtn.disabled = this.remoteLocation;
     }
 
     /**
@@ -147,7 +155,7 @@ class Application {
      * handle button click correctly to the current mode
      * @param btn
      */
-    public static handelBtnClick(btn: Element) {
+    public static handelBtnClick(btn: HTMLInputElement) {
         if (input != document.activeElement) {
             Calculator.processButton(btn, this.scientificMode, this.remoteLocation);
         }
@@ -171,14 +179,18 @@ class Application {
      * @param btn
      * @param event
      */
-    public static handleKeyDownBtn(btn: Element, event: KeyboardEvent): void {
+    public static handleKeyDownBtn(btn: HTMLInputElement, event: KeyboardEvent): void {
         if (input != document.activeElement) {
-            if (btn.innerHTML === event.key) {
+            if (btn.value === event.key || btn.value === mapKeys[event.key]) {
                 btn.classList.add('key-board-down');
-                Calculator.processButton(btn, this.scientificMode, this.remoteLocation);
-                if (event.key == '=' && this.remoteLocation) {
-                    this.displayRemoteCalc().then();
+                switch (this.scientificMode) {
+                    case false:
+                        Calculator.standardProcessButton(btn.value)
                 }
+                // Calculator.processButton(btn, this.scientificMode, this.remoteLocation);
+                // if ((event.key == '=' || mapKeys[event.key] == '=') && this.remoteLocation) {
+                //     this.displayRemoteCalc().then();
+                // }
             }
         }
     }
@@ -188,9 +200,9 @@ class Application {
      * @param btn
      * @param event
      */
-    public static handleKeyUpBtn(btn: Element, event: KeyboardEvent): void {
+    public static handleKeyUpBtn(btn: HTMLInputElement, event: KeyboardEvent): void {
         if (input != document.activeElement) {
-            if (btn.innerHTML === event.key) {
+            if (btn.value === event.key || btn.value === mapKeys[event.key]) {
                 btn.classList.remove('key-board-down');
             }
         }
@@ -277,7 +289,6 @@ document.addEventListener("DOMContentLoaded", () => {
         lightBts.addEventListener('click', () => Application.changeLight());
         infoBtn.addEventListener('click', () => Application.showPopup());
         infoBtn.addEventListener('focusout', () => Application.closePopup());
-        input.addEventListener('pointerdown', () => Calculator.reset());
         buttons.forEach(btn => {
             btn.addEventListener('pointerdown', () => Application.handelBtnClick(btn));
         });
@@ -287,6 +298,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.addEventListener('keyup', event => {
             buttons.forEach(btn => Application.handleKeyUpBtn(btn, event));
         });
+        input.addEventListener('pointerdown', () => Calculator.reset());
         input.oninput = () => Application.handleInputInsert();
         input.addEventListener('focusout', () => Application.calculateByInputInsert());
     }

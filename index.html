@@ -14,7 +14,6 @@
         <h2>Operation log</h2>
         <div class="calc-history-box">
             <div class="calc-history-log">
-                <div>There's no history yet</div>
             </div>
             <input type="image" id="clear-log" src="img/trash-can.png">
         </div>
@@ -26,7 +25,7 @@
 
         <input type="image" id="light" title="light on" src="img/light-bulb.png" class="mode">
         <input type="text" id="calculator-screen"/>
-        <input type="image" id="backspace" class="operator" title="delete" value="←" src="img/backspace.png">
+        <input type="image" class="operator" title="delete" value="Backspace" src="img/backspace.png">
 
         <!--should be input input type=button!!...-->
         <input type="image" id="history" title="hide history" class="mode" src="img/history.png">
@@ -64,13 +63,13 @@
             <input type="button" id="op-modulo" class="operator" value="%">
             <input type="image" id="num-pi" class="operator" value="π" src="img/pi.png">
 
-            <input type="image" id="op-squared" class="operator" value="x^2" src="img/squared.png">
-            <input type="image" id="op-power" class="operator" value="x^y" src="img/power.png">
+            <input type="image" id="op-squared" class="operator" value="^2" src="img/squared.png">
+            <input type="image" id="op-power" class="operator" value="^" src="img/power.png">
 
             <input type="image" id="op-square-root" class="operator" value="√" src="img/square-root.png">
-            <input type="image" id="op-nth-root" class="operator" value="x*√" src="img/nth-root.png">
+            <input type="image" id="op-nth-root" class="operator" value="*√" src="img/nth-root.png">
 
-            <input type="button" class="base-btn operator" value="Base₂">
+            <input type="button" class="base-btn operator" value="Base₂" id="op-log">
             <input type="button" id="op-factorial" class="operator" value="!">
         </div>
     </div>
