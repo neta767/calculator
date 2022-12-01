@@ -1,35 +1,36 @@
 // remote->pi,pow()
 const getOperandRegex = new RegExp(/^(([0-9]+([-+÷×^!%√]|\*√)?)*(\d+\.\d*)?)*$/);
-// const standardOperator = new RegExp(/[-+÷×]/)
+const standardOperator = new RegExp(/[-+÷×]/)
 const digit = '0123456789';
 const standardOperator = '+-÷×';
-import {State} from './types';
-
+const input = document.getElementById('calculator-screen') as HTMLInputElement;
+const historyLog = document.querySelectorAll('.calc-history-log');
 const mapKeys = {
     '÷': '/',
     '×': '*',
 }
 
 export class Calculator {
-    private static standardCalculatorState: State = {
-        firstOperand: null,
-        waitingForSecondOperand: false,
-        operator: null
-    };
-    private static input = document.getElementById('calculator-screen') as HTMLInputElement;
-    private static history = document.querySelectorAll('.calc-history-log');
-    // variables for standard calculate
-    private static currentValue = '';
-    private static firstOperand: string;
-    private static secondOperand: string;
-    private static operator: string;
-    // private static waitingForSecondOperand = false;
-    private static expression = ''
+
 // const sciCalcRegex = new RegExp(/^(([0-9]+([-+/%]|\*{1,2})?)*(\d+\.\d*)?)*$/);
-    // Array.from(srt.matchAll(/([\d.])+([-+*/]?)/g));
+// Array.from(srt.matchAll(/([\d.])+([-+*/]?)/g));
+
+    private static operator: string | null;
+    private static firstOperand: string | null;
+    //  secondOperand: string | null;
+    private static waitingForSecondOperand: boolean;
+    public static calcHistory: { result: string, expression: string }[];
+    //
+    // constructor() {
+    //     this.operator = null;
+    //     this.firstOperand = null;
+    //     this.waitingForSecondOperand = false;
+    //     this.calcHistory = [];
+    // }
+
     // all operators
     // { id: string, numOperands: number, symbol: string, calc: (a: number, b?: number) => number }
-    private static operators = {
+    private operators = {
         '!': {
             id: 'op-factorial',
             numOperands: 1,
@@ -127,31 +128,33 @@ export class Calculator {
         }
     }
     // The number of places to round to
-    private static roundPlaces = 2;
+    private roundPlaces = 2;
     // A list of every token (number or operator) currently in the expression
-    private static tokenList: any[] = [];
+    private tokenList: any[] = [];
     // A list of previous results and expressions in the form {out: output, expression: expression string}
-    private static calcHistory: { result: string, expression: string }[] = [];
+    // private calcHistory: { result: string, expression: string }[] = [];
 
     public static reset(): void {
-        this.standardCalculatorState = {
-            firstOperand: null,
-            waitingForSecondOperand: false,
-            operator: null
-        };
+        this.operator = null;
+        this.firstOperand = null;
+        this.waitingForSecondOperand = false;
+        this.calcHistory = [];
+        input.value = '0';
         // this.waitingForSecondOperand = false;
-        this.tokenList.length = 0;
-        this.input.value = '0';
-        this.expression = this.currentValue = this.firstOperand = this.secondOperand = this.operator = '';
+        // this.tokenList.length = 0;
+        // this.expression = this.currentValue = this.firstOperand = this.secondOperand = this.operator = '';
     }
 
-    public static clearHistory(): void {
-        this.reset();
-        this.calcHistory.length = 0;
-        this.history.forEach(elem => elem.innerHTML = '');
+    public static clearLogHistory(): void {
+        historyLog.forEach(elem => elem.innerHTML = '');
         let item = document.createElement('div');
         item.innerHTML = "There's no history yet";
-        this.history[0].appendChild(item);
+        historyLog[0].appendChild(item);
+    }
+
+    public static clearCalHistory(): void {
+        this.calcHistory = [];
+        this.clearLogHistory();
     }
 
     /********************************
@@ -162,7 +165,7 @@ export class Calculator {
      * @param opID
      * @private
      */
-    private static getOperator(opID: string) {
+    private getOperator(opID: string) {
         // for (let i = 0; i < this.operators.length; i++) {
         //     if (this.operators[i].id === opID) {
         //         return this.operators[i];
@@ -176,7 +179,7 @@ export class Calculator {
      * @param opID
      * @private
      */
-    private static getOpPrecedence(opID: string): number {
+    private getOpPrecedence(opID: string): number {
         // for (let i = 0; i < this.operators.length; i++) {
         //     if (this.operators[i].id === opID) {
         //         return i;
@@ -192,7 +195,7 @@ export class Calculator {
      * @param op2
      * @private
      */
-    private static hasPrecedence(op1: string, op2: string): boolean {
+    private hasPrecedence(op1: string, op2: string): boolean {
         if (this.getOperator(op1) != undefined) {
             return this.getOpPrecedence(op1) <= this.getOpPrecedence(op2);
         }
@@ -202,42 +205,42 @@ export class Calculator {
      * Evaluates the expression and outputs the result
      * @private
      */
-    private static scientificCalculate(): void {
-        // Evaluate the expression using a modified version of the shunting yard algorithm
-        let valStack = [];
-        let opStack = [];
-        for (let i = 0; i < this.tokenList.length; i++) {
-            if (!isNaN(this.tokenList[i])) {
-                valStack.push(this.tokenList[i]);
-            } else if (this.tokenList[i] === 'num-pi') {
-                valStack.push(Math.PI);
-            } else {
-                while (opStack.length > 0 && this.hasPrecedence(opStack[opStack.length - 1], this.tokenList[i])) {
-                    let operator = this.getOperator(opStack.pop());
-                    if (operator.numOperands === 1)
-                        valStack.push(this.applyOperator(operator, [valStack.pop()]));
-                    else
-                        valStack.push(this.applyOperator(operator, [valStack.pop(), valStack.pop()]));
-                }
-                opStack.push(this.tokenList[i]);
-            }
-        }
-        while (opStack.length > 0) {
-            let operator = this.getOperator(opStack.pop());
-            if (operator.numOperands === 1)
-                valStack.push(this.applyOperator(operator, [valStack.pop()]));
-            else
-                valStack.push(this.applyOperator(operator, [valStack.pop(), valStack.pop()]));
-        }
-
-        // Output the calculated result and the original expression in the history
-        this.output(this.input.value, valStack[0]);
-    }
+    // private scientificCalculate(): void {
+    //     // Evaluate the expression using a modified version of the shunting yard algorithm
+    //     let valStack = [];
+    //     let opStack = [];
+    //     for (let i = 0; i < this.tokenList.length; i++) {
+    //         if (!isNaN(this.tokenList[i])) {
+    //             valStack.push(this.tokenList[i]);
+    //         } else if (this.tokenList[i] === 'num-pi') {
+    //             valStack.push(Math.PI);
+    //         } else {
+    //             while (opStack.length > 0 && this.hasPrecedence(opStack[opStack.length - 1], this.tokenList[i])) {
+    //                 let operator = this.getOperator(opStack.pop());
+    //                 if (operator.numOperands === 1)
+    //                     valStack.push(this.applyOperator(operator, [valStack.pop()]));
+    //                 else
+    //                     valStack.push(this.applyOperator(operator, [valStack.pop(), valStack.pop()]));
+    //             }
+    //             opStack.push(this.tokenList[i]);
+    //         }
+    //     }
+    //     while (opStack.length > 0) {
+    //         let operator = this.getOperator(opStack.pop());
+    //         if (operator.numOperands === 1)
+    //             valStack.push(this.applyOperator(operator, [valStack.pop()]));
+    //         else
+    //             valStack.push(this.applyOperator(operator, [valStack.pop(), valStack.pop()]));
+    //     }
+    //
+    //     // Output the calculated result and the original expression in the history
+    //     this.output(input.value, valStack[0]);
+    // }
 
     /**
      * Returns the result of applying the given unary or binary operator on the top values of the value stack
      */
-    private static applyOperator(operator, vals: string[]): number {
+    private applyOperator(operator, vals: string[]): number {
         let valA = vals[0];
         let result;
         if (vals.length === 1) {
@@ -254,7 +257,7 @@ export class Calculator {
      * @param token
      * @private
      */
-    private static addToken(token): void {
+    private addToken(token): void {
         if (isNaN(token)) {
             //for expression like 3pi
             if (token === 'num-pi' && !isNaN(this.tokenList[this.tokenList.length - 1])) {
@@ -282,7 +285,7 @@ export class Calculator {
      * Updates the input
      * @private
      */
-    private static displayEquation(): void {
+    private displayEquation(): void {
         let htmlString = '';
         for (let i = 0; i < this.tokenList.length; i++) {
             if (isNaN(this.tokenList[i])) {
@@ -295,13 +298,13 @@ export class Calculator {
                 htmlString += this.tokenList[i];
             }
         }
-        this.input.value = htmlString;
+        input.value = htmlString;
     }
 
     /**
      * Deletes the last entered token
      */
-    private static deleteLast(): void {
+    private deleteLast(): void {
         if (isNaN(this.tokenList[this.tokenList.length - 1])) {
             this.tokenList.pop();
         } else {
@@ -321,7 +324,7 @@ export class Calculator {
      * @param char
      * @private
      */
-    private static isOperator(char: string): boolean {
+    private isOperator(char: string): boolean {
         return char == '+' || char == '-' || char == '×' || char == '÷';
     }
 
@@ -330,48 +333,48 @@ export class Calculator {
      * @param char
      * @private
      */
-    private static standardCalculate(char: string): void {
-        if (char == '=') {
-            let out = eval(this.firstOperand + this.operator + this.secondOperand);
-            this.output(this.expression, out)
-        } else if (this.isOperator(char)) {
-            // if (this.waitingForSecondOperand) {
-            //     this.firstOperand = this.currentValue || this.firstOperand;
-            // }
-            if (this.isOperator(this.expression.slice(-1))) {
-                this.expression = this.expression.slice(0, -1);
-            }
-            if (char == '÷') {
-                this.operator = '/';
-            } else if (char == '×') {
-                this.operator = '*';
-            } else {
-                this.operator = char;
-            }
-            this.expression += this.operator;
-            this.secondOperand = '';
-            //     this.waitingForSecondOperand = true;
-            // } else if (!isNaN(Number(char)) || '.') {
-            //     this.expression += char;
-            // //     if (this.waitingForSecondOperand) {
-            //         this.secondOperand += char;
-            //         this.input = this.currentValue = eval(this.firstOperand + this.operator + this.secondOperand);
-            //     } else {
-            //         this.firstOperand += char;
-            //     }
-        }
-    }
+    // private standardCalculate(char: string): void {
+    //     if (char == '=') {
+    //         let out = eval(this.firstOperand + this.operator + this.secondOperand);
+    //         this.output(this.expression, out)
+    //     } else if (this.isOperator(char)) {
+    //         // if (this.waitingForSecondOperand) {
+    //         //     this.firstOperand = this.currentValue || this.firstOperand;
+    //         // }
+    //         if (this.isOperator(this.expression.slice(-1))) {
+    //             this.expression = this.expression.slice(0, -1);
+    //         }
+    //         if (char == '÷') {
+    //             this.operator = '/';
+    //         } else if (char == '×') {
+    //             this.operator = '*';
+    //         } else {
+    //             this.operator = char;
+    //         }
+    //         this.expression += this.operator;
+    //         this.secondOperand = '';
+    //         //     this.waitingForSecondOperand = true;
+    //         // } else if (!isNaN(Number(char)) || '.') {
+    //         //     this.expression += char;
+    //         // //     if (this.waitingForSecondOperand) {
+    //         //         this.secondOperand += char;
+    //         //         input = this.currentValue = eval(this.firstOperand + this.operator + this.secondOperand);
+    //         //     } else {
+    //         //         this.firstOperand += char;
+    //         //     }
+    //     }
+    // }
 
     /**
      * Deletes the last entered char and calculate again as the enter input
      */
-    private static backSpace(): void {
-        const newStrInput = this.expression.slice(0, this.expression.length - 1);
-        this.reset();
-        for (let i = 0; i < newStrInput.length; i++) {
-            this.standardCalculate(newStrInput[i])
-        }
-    }
+    // private backSpace(): void {
+    //     const newStrInput = this.expression.slice(0, this.expression.length - 1);
+    //     this.reset();
+    //     for (let i = 0; i < newStrInput.length; i++) {
+    //         this.standardCalculate(newStrInput[i])
+    //     }
+    // }
 
     /***************************
      *both functions calculators
@@ -381,74 +384,55 @@ export class Calculator {
      * @param expression
      * @param out
      */
-    public static output(expression: string, out) {
-        if (!Number.isInteger(out)) {
-            out = out.toFixed(this.roundPlaces);
-        }
-        this.input = out.toString();
-        this.calcHistory.push({result: out, expression: expression});
-        this.history.forEach(elem => elem.innerHTML = '');
-        for (let i = this.calcHistory.length - 1; i >= 0; i--) {
-            let list = this.history;
-            let item1 = document.createElement('div');
-            let item2 = document.createElement('div');
-            item1.classList.add('calc-history-eq');
-            item1.innerHTML = this.calcHistory[i].expression;
-            item1.style.textAlign = 'left';
-            item2.classList.add('calc-history-eq');
-            item2.innerHTML = `= ${this.calcHistory[i].result} <hr>`;
-            list[0].appendChild(item1)
-            list[0].appendChild(item2)
-        }
-    }
+    // public output(expression: string, out) {
+    //     if (!Number.isInteger(out)) {
+    //         out = out.toFixed(this.roundPlaces);
+    //     }
+    //     input = out.toString();
+    //     // this.calcHistory.push({result: out, expression: expression});
+    //     // this.history.forEach(elem => elem.innerHTML = '');
+    //     // for (let i = this.calcHistory.length - 1; i >= 0; i--) {
+    //     //     let list = this.history;
+    //     //     let item1 = document.createElement('div');
+    //     //     let item2 = document.createElement('div');
+    //     //     item1.classList.add('calc-history-eq');
+    //     //     item1.innerHTML = this.calcHistory[i].expression;
+    //     //     item1.style.textAlign = 'left';
+    //     //     item2.classList.add('calc-history-eq');
+    //     //     item2.innerHTML = `= ${this.calcHistory[i].result} <hr>`;
+    //     //     list[0].appendChild(item1)
+    //     //     list[0].appendChild(item2)
+    //     // }
+    // }
 
-    public static standardProcessButton(char: string) {
+    public static processButtonStandard(char: string) {
         // switch (char) {
         //     case 'Backspace':
         //         //
         //         break;
-        //     case 'AC':
-        //         this.reset();
-        //         break;
-        //     default:
+        let sec: string;
         if (digit.includes(char)) {
-            let {waitingForSecondOperand} = this.standardCalculatorState;
-            if (waitingForSecondOperand) {
-                this.input.value = char;
-                this.standardCalculatorState.waitingForSecondOperand = false;
+            if (this.waitingForSecondOperand) {
+                input.value = char;
+                this.waitingForSecondOperand = false;
             } else {
-                this.input.value = this.input.value === '0' ? char : this.input.value + char;
+                input.value = input.value === '0' ? char : input.value + char;
             }
         } else if (char == '.') {
-            if (!this.input.value.includes('.')) {
-                this.input.value += '.';
+            if (!input.value.includes('.')) {
+                input.value += '.';
             }
-        } else if (standardOperator.includes(char)) {
-            let {firstOperand, operator, waitingForSecondOperand} = this.standardCalculatorState;
-            this.standardCalculatorState.operator = char;
-            if (firstOperand === null) {
-                this.standardCalculatorState.firstOperand = this.input.value;
-            } else if (!waitingForSecondOperand) {
-                let expression: string = `${firstOperand} ${operator} ${this.input.value}`;
-                // let op = mapKeys[operator] === undefined ? operator : mapKeys[operator];
-                this.input.value = this.standardCalculatorState.firstOperand = this.operators[operator].calc(Number.parseFloat(firstOperand), Number.parseFloat(this.input.value));
-                this.calcHistory.push({result: this.input.value, expression: expression});
-                this.history.forEach(elem => elem.innerHTML = '');
-                for (let i = this.calcHistory.length - 1; i >= 0; i--) {
-                    let list = this.history;
-                    let expression = document.createElement('div');
-                    let result = document.createElement('div');
-                    expression.classList.add('calc-history-eq');
-                    expression.innerHTML = `${this.calcHistory[i].expression} =`;
-                    result.classList.add('calc-history-res');
-                    result.innerHTML = `${this.calcHistory[i].result} <hr>`;
-                    list[0].appendChild(expression)
-                    list[0].appendChild(result)
-                }
+        } else if (this.standardOperator.includes(char)) {
+            this.operator = char;
+            if (this.firstOperand === null) {
+                this.firstOperand = input.value;
+            } else if (!this.waitingForSecondOperand) {
+                this.evalStandard();
             }
-            this.standardCalculatorState.waitingForSecondOperand = true;
+            this.waitingForSecondOperand = true;
         }
     }
+
 
     /**
      * Triggers the appropriate action for each button that can be pressed be the current mode of the calculator
@@ -456,65 +440,88 @@ export class Calculator {
      * @param scientificMode
      * @param remoteLocation
      */
-    public static processButton(button: Element, scientificMode: boolean, remoteLocation: boolean) {
-        switch (button.id) {
-            case 'backspace':
-                if (scientificMode || remoteLocation) {
-                    this.deleteLast();
-                } else {
-                    this.backSpace();
-                }
-                break;
-            case 'clear':
-                if (scientificMode || remoteLocation) {
-                    if (this.tokenList.length === 0) {
-                        this.calcHistory.length = 0;
-                        this.history.forEach(elem => elem.innerHTML = '');
-                    }
-                } else {
-                    if (this.expression === '') {
-                        this.calcHistory.length = 0;
-                        this.history.forEach(elem => elem.innerHTML = '');
-                    }
-                    this.displayEquation();
+    // public processButton(button: Element, scientificMode: boolean, remoteLocation: boolean) {
+    //     switch (button.id) {
+    //         case 'backspace':
+    //             if (scientificMode || remoteLocation) {
+    //                 this.deleteLast();
+    //             } else {
+    //                 this.backSpace();
+    //             }
+    //             break;
+    //         case 'clear':
+    //             if (scientificMode || remoteLocation) {
+    //                 if (this.tokenList.length === 0) {
+    //                     // this.calcHistory.length = 0;
+    //                     // this.history.forEach(elem => elem.innerHTML = '');
+    //                 }
+    //             } else {
+    //                 if (this.expression === '') {
+    //                     // this.calcHistory.length = 0;
+    //                     // this.history.forEach(elem => elem.innerHTML = '');
+    //                 }
+    //                 this.displayEquation();
+    //
+    //             }
+    //             break;
+    //         case 'period':
+    //             if (scientificMode || remoteLocation) {
+    //                 if (isNaN(this.tokenList[this.tokenList.length - 1])) {
+    //                     this.addToken('0.');
+    //                 } else {
+    //                     if (this.tokenList[this.tokenList.length - 1].indexOf('.') === -1) {
+    //                         this.tokenList[this.tokenList.length - 1] += '.';
+    //                     }
+    //                 }
+    //                 this.displayEquation();
+    //             } else {
+    //                 this.standardCalculate(button.innerHTML)
+    //             }
+    //             break;
+    //         case 'equal':
+    //             if (!remoteLocation) {
+    //                 if (scientificMode) {
+    //                     this.scientificCalculate();
+    //                 } else {
+    //                     this.standardCalculate(button.innerHTML);
+    //                 }
+    //             }
+    //             break;
+    //         default:
+    //             if (scientificMode || remoteLocation) {
+    //                 if (button.classList.contains('number')) {
+    //                     this.addToken(button.innerHTML);
+    //                 } else {
+    //                     this.addToken(button.id);
+    //                 }
+    //             } else {
+    //                 this.standardCalculate(button.innerHTML)
+    //             }
+    //     }
+    // }
 
-                }
-                break;
-            case 'period':
-                if (scientificMode || remoteLocation) {
-                    if (isNaN(this.tokenList[this.tokenList.length - 1])) {
-                        this.addToken('0.');
-                    } else {
-                        if (this.tokenList[this.tokenList.length - 1].indexOf('.') === -1) {
-                            this.tokenList[this.tokenList.length - 1] += '.';
-                        }
-                    }
-                    this.displayEquation();
-                } else {
-                    this.standardCalculate(button.innerHTML)
-                }
-                break;
-            case 'equal':
-                if (!remoteLocation) {
-                    if (scientificMode) {
-                        this.scientificCalculate();
-                    } else {
-                        this.standardCalculate(button.innerHTML);
-                    }
-                }
-                break;
-            default:
-                if (scientificMode || remoteLocation) {
-                    if (button.classList.contains('number')) {
-                        this.addToken(button.innerHTML);
-                    } else {
-                        this.addToken(button.id);
-                    }
-                } else {
-                    this.standardCalculate(button.innerHTML)
-                }
-        }
+
+    private refreshHistory() {
+        this.historyLog.forEach(elem => elem.innerHTML = '');
+        // for (let i = this.calcHistory.length - 1; i >= 0; i--) {
+        //     let expression = document.createElement('div');
+        //     let result = document.createElement('div');
+        //     expression.classList.add('calc-history-eq');
+        //     expression.innerHTML = `${this.calcHistory[i].expression} =`;
+        //     result.classList.add('calc-history-res');
+        //     result.innerHTML = `${this.calcHistory[i].result} <hr>`;
+        //     historyLog[0].appendChild(expression)
+        //     historyLog[0].appendChild(result)
+        // }
     }
 
-
+    public static evalStandard() {
+        let {firstOperand, operator} = this;
+        let expression: string = `${firstOperand} ${operator} ${input.value}`;
+        // let op = mapKeys[operator] === undefined ? operator : mapKeys[operator];
+        input.value = this.firstOperand = this.operators[operator].calc(Number.parseFloat(firstOperand), Number.parseFloat(input.value));
+        this.calcHistory.push({result: input.value, expression: expression});
+        this.refreshHistory();
+        this.waitingForSecondOperand = true;
+    }
 }

@@ -1,4 +1,6 @@
-import {Calculator} from "./Calculator.js";
+// import {Calculator} from "./Calculator";
+
+import {Calculator} from "./Calculator";
 
 const mapKeys = {
     'Enter': '=',
@@ -10,6 +12,12 @@ const sciCalcRegex = new RegExp(/^(([0-9]+([-+/%]|\*{1,2})?)*(\d+\.\d*)?)*$/);
 const version = '4.0.0'
 
 class Application {
+    private mapKeys = {
+        'Enter': '=',
+        '/': '÷',
+        '*': '×',
+    }
+    // private cal = new Calculator();
     // toggle variables
     public static scientificMode = true;
     private static displayHistory = true;
@@ -18,6 +26,7 @@ class Application {
     //config style variables
     private static theme = 'light';
     private static color: string;
+
     private static font: string;
 
     /**
@@ -25,7 +34,7 @@ class Application {
      */
     public static indexPageLoaded(): void {
         Calculator.reset();
-        Calculator.clearHistory();
+        Calculator.clearCalHistory();
         const queryString = window.location.search;
         if (queryString != '') {
             const urlParams = new URLSearchParams(queryString);
@@ -93,7 +102,7 @@ class Application {
      */
     public static changeCalcMode(calcModeBtn): void {
         Calculator.reset();
-        Calculator.clearHistory();
+        Calculator.clearLogHistory();
         document.body.classList.toggle('hide-scientific');
         this.scientificMode = !this.scientificMode;
         if (this.scientificMode === true) {
@@ -148,7 +157,7 @@ class Application {
      */
     public static handelBtnClick(locationMode: HTMLElement, opLogBtn: HTMLButtonElement, input: Element, btn: HTMLInputElement) {
         if (input != document.activeElement) {
-            Calculator.processButton(btn, this.scientificMode, this.remoteLocation);
+            // cal.processButton(btn, this.scientificMode, this.remoteLocation);
         }
         if (btn.id == 'clear') {
             Calculator.reset();
@@ -161,7 +170,7 @@ class Application {
     private static async displayRemoteCalc(input, locationMode, opLogBtn) {
         const expression = input.value;
         const out = await this.remoteEval(input, locationMode, opLogBtn);
-        Calculator.output(expression, out);
+        // Calculator.output(expression, out);
     }
 
     /**
@@ -175,11 +184,18 @@ class Application {
         if (input != document.activeElement) {
             if (btn.value === event.key || btn.value === mapKeys[event.key]) {
                 btn.classList.add('key-board-down');
-                switch (this.scientificMode) {
-                    case false:
-                        Calculator.standardProcessButton(btn.value)
+                if (btn.value == '=') {
+                    switch (this.scientificMode) {
+                        case false:
+                            Calculator.evalStandard();
+                    }
+                } else {
+                    switch (this.scientificMode) {
+                        case false:
+                            Calculator.processButtonStandard(btn.value)
+                    }
                 }
-                // Calculator.processButton(btn, this.scientificMode, this.remoteLocation);
+                // cal.processButton(btn, this.scientificMode, this.remoteLocation);
                 // if ((event.key == '=' || mapKeys[event.key] == '=') && this.remoteLocation) {
                 //     this.displayRemoteCalc().then();
                 // }
@@ -306,5 +322,6 @@ document.addEventListener("DOMContentLoaded", () => {
         input.addEventListener('pointerdown', () => Calculator.reset());
         input.oninput = () => Application.handleInputInsert(input);
         input.addEventListener('focusout', () => Application.calculateByInputInsert(input));
+        document.getElementById('clear-log').addEventListener('pointerdown', () => Calculator.clearCalHistory())
     }
 });
