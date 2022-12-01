@@ -5,17 +5,6 @@ const mapKeys = {
     '/': '÷',
     '*': '×',
 }
-const fonts = document.querySelectorAll('option');
-const input = document.getElementById('calculator-screen') as HTMLInputElement;
-const buttons = document.querySelectorAll('.operator,.number') as NodeListOf<HTMLInputElement>;
-const historyBtn = document.getElementById('history');
-const calcModeBtn = document.getElementById('calcMode');
-const locationModeBtn = document.getElementById('location');
-const lightBts = document.getElementById('light');
-const infoBtn = document.getElementById('info');
-const popup = document.getElementById("popup");
-const calculator = document.querySelector('.calculator');
-const opLogBtn = document.getElementById('op-log') as HTMLButtonElement;
 const standCalcRegex = new RegExp(/^(([0-9]+[-+/*]?)*(\d+\.\d*)?)*$/);
 const sciCalcRegex = new RegExp(/^(([0-9]+([-+/%]|\*{1,2})?)*(\d+\.\d*)?)*$/);
 const version = '4.0.0'
@@ -58,7 +47,7 @@ class Application {
     /**
      *change fonts in fonts select tag from config.html
      */
-    public static configPageLoaded(): void {
+    public static configPageLoaded(fonts): void {
         fonts.forEach(font => font.style.fontFamily = font.value);
     }
 
@@ -74,21 +63,21 @@ class Application {
     /**
      * light on/off for calculator-screen
      */
-    public static changeLight(): void {
+    public static changeLight(lightBtn): void {
         document.body.classList.toggle("light-screen");
         this.lightOn = !this.lightOn;
         if (this.lightOn === true) {
-            lightBts.title = 'light off';
+            lightBtn.title = 'light off';
         } else {
-            lightBts.title = 'light on';
+            lightBtn.title = 'light on';
         }
-        this.changeToggle(lightBts)
+        this.changeToggle(lightBtn)
     }
 
     /**
      * hide/show history
      */
-    public static changeHistoryMode(): void {
+    public static changeHistoryMode(historyBtn): void {
         document.body.classList.toggle('hide-history');
         this.displayHistory = !this.displayHistory;
         if (this.displayHistory === true) {
@@ -102,7 +91,7 @@ class Application {
     /**
      *hide/show scientific calculator
      */
-    public static changeCalcMode(): void {
+    public static changeCalcMode(calcModeBtn): void {
         Calculator.reset();
         Calculator.clearHistory();
         document.body.classList.toggle('hide-scientific');
@@ -119,15 +108,14 @@ class Application {
     /**
      *change to local or remote calculation mode and disable op-log button
      */
-    public static changeLocationMode(): void {
-        const element = document.getElementById('location');
+    public static changeLocationMode(locationModeBtn, opLogBtn): void {
         this.remoteLocation = !this.remoteLocation;
         if (this.remoteLocation === true) {
-            element.title = 'locally';
+            locationModeBtn.title = 'locally';
         } else {
-            element.title = 'remote';
+            locationModeBtn.title = 'remote';
         }
-        this.changeToggle(element)
+        this.changeToggle(locationModeBtn)
         this.changeToggle(opLogBtn);
         opLogBtn.style.cursor = 'context-menu';
         opLogBtn.disabled = this.remoteLocation;
@@ -136,7 +124,7 @@ class Application {
     /**
      * show info popup
      */
-    public static showPopup(): void {
+    public static showPopup(infoBtn, popup, calculator): void {
         infoBtn.classList.add('key-board-down');
         popup.classList.add('show-popup');
         calculator.classList.add('blur');
@@ -145,7 +133,7 @@ class Application {
     /**
      * close info popup
      */
-    public static closePopup(): void {
+    public static closePopup(infoBtn, popup, calculator): void {
         infoBtn.classList.remove('key-board-down');
         popup.classList.remove('show-popup');
         calculator.classList.remove('blur');
@@ -153,9 +141,12 @@ class Application {
 
     /**
      * handle button click correctly to the current mode
+     * @param locationMode
+     * @param opLogBtn
+     * @param input
      * @param btn
      */
-    public static handelBtnClick(btn: HTMLInputElement) {
+    public static handelBtnClick(locationMode: HTMLElement, opLogBtn: HTMLButtonElement, input: Element, btn: HTMLInputElement) {
         if (input != document.activeElement) {
             Calculator.processButton(btn, this.scientificMode, this.remoteLocation);
         }
@@ -163,23 +154,24 @@ class Application {
             Calculator.reset();
         }
         if (btn.id == 'equal' && this.remoteLocation) {
-            this.displayRemoteCalc().then();
+            this.displayRemoteCalc(input, locationMode, opLogBtn).then();
         }
     }
 
-    private static async displayRemoteCalc() {
+    private static async displayRemoteCalc(input, locationMode, opLogBtn) {
         const expression = input.value;
-        const out = await this.remoteEval();
+        const out = await this.remoteEval(input, locationMode, opLogBtn);
         Calculator.output(expression, out);
     }
 
     /**
      * handle key down correctly to the current mode
      * implement button clicked style btn
+     * @param input
      * @param btn
      * @param event
      */
-    public static handleKeyDownBtn(btn: HTMLInputElement, event: KeyboardEvent): void {
+    public static handleKeyDownBtn(input, btn: HTMLInputElement, event: KeyboardEvent): void {
         if (input != document.activeElement) {
             if (btn.value === event.key || btn.value === mapKeys[event.key]) {
                 btn.classList.add('key-board-down');
@@ -197,10 +189,11 @@ class Application {
 
     /**
      * remove button clicked style btn after key up
+     * @param input
      * @param btn
      * @param event
      */
-    public static handleKeyUpBtn(btn: HTMLInputElement, event: KeyboardEvent): void {
+    public static handleKeyUpBtn(input, btn: HTMLInputElement, event: KeyboardEvent): void {
         if (input != document.activeElement) {
             if (btn.value === event.key || btn.value === mapKeys[event.key]) {
                 btn.classList.remove('key-board-down');
@@ -212,7 +205,7 @@ class Application {
      *handle input value
      * when input value not valid show alert and delete the char
      */
-    public static handleInputInsert(): void {
+    public static handleInputInsert(input): void {
         let typedInput: string = input.value;
         if (this.scientificMode) {
             if (sciCalcRegex.test(typedInput) == false) {
@@ -230,7 +223,7 @@ class Application {
     /**
      * calculate result from input insert when input out of focus
      */
-    public static calculateByInputInsert(): void {
+    public static calculateByInputInsert(input): void {
         const mathEqu = input.value;
         input.value = eval(mathEqu);
     }
@@ -256,7 +249,7 @@ class Application {
      * catch error when timeout or response return error
      * @private
      */
-    private static async remoteEval() {
+    private static async remoteEval(input, locationMode, opLogBtn) {
         try {
             const url = `https://api.mathjs.org/v4/?expr=${encodeURIComponent(input.value)}`;
             const response = await this.fetchWithTimeout(url);
@@ -264,7 +257,7 @@ class Application {
             return data;
         } catch (e) {
             if (confirm('Something went wrong. Would you like to change to local mode?')) {
-                this.changeLocationMode();
+                this.changeLocationMode(locationMode, opLogBtn);
             }
         }
     }
@@ -276,30 +269,42 @@ class Application {
 document.addEventListener("DOMContentLoaded", () => {
     const url = document.location.href;
     if (url.search('config.html') != -1) {
-        Application.configPageLoaded();
+        const fonts = document.querySelectorAll('option');
+        Application.configPageLoaded(fonts);
 
     } else if (url.search('help.html') != -1) {
         document.querySelector('code').innerHTML = version;
     } else {
         // when on index.html
+        const input = document.getElementById('calculator-screen') as HTMLInputElement;
+        const buttons = document.querySelectorAll('.operator,.number') as NodeListOf<HTMLInputElement>;
+        const historyBtn = document.getElementById('history');
+        const calcModeBtn = document.getElementById('calcMode');
+        const locationModeBtn = document.getElementById('location');
+        const lightBts = document.getElementById('light');
+        const infoBtn = document.getElementById('info');
+        const popup = document.getElementById("popup");
+        const calculator = document.querySelector('.calculator');
+        const opLogBtn = document.getElementById('op-log') as HTMLButtonElement;
+
         Application.indexPageLoaded();
-        historyBtn.addEventListener('click', () => Application.changeHistoryMode());
-        calcModeBtn.addEventListener('click', () => Application.changeCalcMode());
-        locationModeBtn.addEventListener('click', () => Application.changeLocationMode());
-        lightBts.addEventListener('click', () => Application.changeLight());
-        infoBtn.addEventListener('click', () => Application.showPopup());
-        infoBtn.addEventListener('focusout', () => Application.closePopup());
+        historyBtn.addEventListener('click', () => Application.changeHistoryMode(historyBtn));
+        calcModeBtn.addEventListener('click', () => Application.changeCalcMode(calcModeBtn));
+        locationModeBtn.addEventListener('click', () => Application.changeLocationMode(locationModeBtn, opLogBtn));
+        lightBts.addEventListener('click', () => Application.changeLight(lightBts));
+        infoBtn.addEventListener('click', () => Application.showPopup(infoBtn, popup, calculator));
+        infoBtn.addEventListener('focusout', () => Application.closePopup(infoBtn, popup, calculator));
         buttons.forEach(btn => {
-            btn.addEventListener('pointerdown', () => Application.handelBtnClick(btn));
+            btn.addEventListener('pointerdown', () => Application.handelBtnClick(locationModeBtn, opLogBtn, input, btn));
         });
         document.addEventListener('keydown', event => {
-            buttons.forEach(btn => Application.handleKeyDownBtn(btn, event));
+            buttons.forEach(btn => Application.handleKeyDownBtn(input, btn, event));
         });
         document.addEventListener('keyup', event => {
-            buttons.forEach(btn => Application.handleKeyUpBtn(btn, event));
+            buttons.forEach(btn => Application.handleKeyUpBtn(input, btn, event));
         });
         input.addEventListener('pointerdown', () => Calculator.reset());
-        input.oninput = () => Application.handleInputInsert();
-        input.addEventListener('focusout', () => Application.calculateByInputInsert());
+        input.oninput = () => Application.handleInputInsert(input);
+        input.addEventListener('focusout', () => Application.calculateByInputInsert(input));
     }
 });
