@@ -9,22 +9,23 @@ const historyLog = document.querySelectorAll('.calc-history-log');
 // }
 
 export class Calculator {
-    private static operator: string | null;
-    private static firstOperand: string | null;
+    private operator: string | null;
+    private firstOperand: string | null;
     //  secondOperand: string | null;
-    private static waitingForSecondOperand: boolean;
-    public static calcHistory: { result: string, expression: string }[];
+    private waitingForSecondOperand: boolean;
+    private calcHistory: { result: string, expression: string }[];
+
     //
-    // constructor() {
-    //     this.operator = null;
-    //     this.firstOperand = null;
-    //     this.waitingForSecondOperand = false;
-    //     this.calcHistory = [];
-    // }
+    constructor() {
+        this.operator = null;
+        this.firstOperand = null;
+        this.waitingForSecondOperand = false;
+        this.calcHistory = [];
+    }
 
     // all operators
     // {id: string, numOperands: number, calc: (a: number, b?: number) => number}
-    private static operators = {
+    private operators = {
         '!': {
             id: 'op-factorial',
             numOperands: 1,
@@ -122,7 +123,7 @@ export class Calculator {
         }
     }
 
-    public static reset(): void {
+    public reset(): void {
         this.operator = null;
         this.firstOperand = null;
         this.waitingForSecondOperand = false;
@@ -130,19 +131,19 @@ export class Calculator {
         input.value = '0';
     }
 
-    public static clearLogHistory(): void {
+    public clearLogHistory(): void {
         historyLog.forEach(elem => elem.innerHTML = '');
         let item = document.createElement('div');
         item.innerHTML = "There's no history yet";
         historyLog[0].appendChild(item);
     }
 
-    public static clearCalHistory(): void {
+    public clearCalHistory(): void {
         this.calcHistory = [];
         this.clearLogHistory();
     }
 
-    public static processButtonStandard(char: string) {
+    public processButtonStandard(char: string) {
         // switch (char) {
         //     case 'Backspace':
         //         //
@@ -169,21 +170,21 @@ export class Calculator {
         }
     }
 
-    private static refreshHistory() {
+    private refreshHistory() {
         historyLog.forEach(elem => elem.innerHTML = '');
-        // for (let i = this.calcHistory.length - 1; i >= 0; i--) {
-        //     let expression = document.createElement('div');
-        //     let result = document.createElement('div');
-        //     expression.classList.add('calc-history-eq');
-        //     expression.innerHTML = `${this.calcHistory[i].expression} =`;
-        //     result.classList.add('calc-history-res');
-        //     result.innerHTML = `${this.calcHistory[i].result} <hr>`;
-        //     historyLog[0].appendChild(expression)
-        //     historyLog[0].appendChild(result)
-        // }
+        for (let i = this.calcHistory.length - 1; i >= 0; i--) {
+            let expression = document.createElement('div');
+            let result = document.createElement('div');
+            expression.classList.add('calc-history-eq');
+            expression.innerHTML = `${this.calcHistory[i].expression} =`;
+            result.classList.add('calc-history-res');
+            result.innerHTML = `${this.calcHistory[i].result} <hr>`;
+            historyLog[0].appendChild(expression)
+            historyLog[0].appendChild(result)
+        }
     }
 
-    public static evalStandard() {
+    public evalStandard() {
         let {firstOperand, operator} = this;
         let expression: string = `${firstOperand} ${operator} ${input.value}`;
         // let op = mapKeys[operator] === undefined ? operator : mapKeys[operator];

@@ -1,6 +1,4 @@
-// import {Calculator} from "./Calculator";
-
-import {Calculator} from "./Calculator";
+import {Calculator} from "./Calculator.js";
 
 const mapKeys = {
     'Enter': '=',
@@ -12,6 +10,7 @@ const sciCalcRegex = new RegExp(/^(([0-9]+([-+/%]|\*{1,2})?)*(\d+\.\d*)?)*$/);
 const version = '4.0.0'
 
 class Application {
+    private static calc = new Calculator();
     private mapKeys = {
         'Enter': '=',
         '/': '÷',
@@ -33,8 +32,8 @@ class Application {
      * reset calculator and implement config style
      */
     public static indexPageLoaded(): void {
-        Calculator.reset();
-        Calculator.clearCalHistory();
+        this.calc.reset();
+        this.calc.clearCalHistory();
         const queryString = window.location.search;
         if (queryString != '') {
             const urlParams = new URLSearchParams(queryString);
@@ -101,8 +100,8 @@ class Application {
      *hide/show scientific calculator
      */
     public static changeCalcMode(calcModeBtn): void {
-        Calculator.reset();
-        Calculator.clearLogHistory();
+        this.calc.reset();
+        this.calc.clearLogHistory();
         document.body.classList.toggle('hide-scientific');
         this.scientificMode = !this.scientificMode;
         if (this.scientificMode === true) {
@@ -160,7 +159,7 @@ class Application {
             // cal.processButton(btn, this.scientificMode, this.remoteLocation);
         }
         if (btn.id == 'clear') {
-            Calculator.reset();
+            this.calc.reset();
         }
         if (btn.id == 'equal' && this.remoteLocation) {
             this.displayRemoteCalc(input, locationMode, opLogBtn).then();
@@ -187,12 +186,12 @@ class Application {
                 if (btn.value == '=') {
                     switch (this.scientificMode) {
                         case false:
-                            Calculator.evalStandard();
+                            this.calc.evalStandard();
                     }
                 } else {
                     switch (this.scientificMode) {
                         case false:
-                            Calculator.processButtonStandard(btn.value)
+                            this.calc.processButtonStandard(btn.value)
                     }
                 }
                 // cal.processButton(btn, this.scientificMode, this.remoteLocation);
@@ -319,9 +318,9 @@ document.addEventListener("DOMContentLoaded", () => {
         document.addEventListener('keyup', event => {
             buttons.forEach(btn => Application.handleKeyUpBtn(input, btn, event));
         });
-        input.addEventListener('pointerdown', () => Calculator.reset());
+        // input.addEventListener('pointerdown', () => this.calc.reset());
         input.oninput = () => Application.handleInputInsert(input);
         input.addEventListener('focusout', () => Application.calculateByInputInsert(input));
-        document.getElementById('clear-log').addEventListener('pointerdown', () => Calculator.clearCalHistory())
+        // document.getElementById('clear-log').addEventListener('pointerdown', () => Calculator.clearCalHistory())
     }
 });
