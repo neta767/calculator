@@ -1,31 +1,11 @@
-// remote->pi,pow()
-const digit = '0123456789';
-const standardOperator = '+-÷×';
-const input = document.getElementById('calculator-screen') as HTMLInputElement;
-const historyLog = document.querySelectorAll('.calc-history-log');
-// const mapKeys = {
-//     '÷': '/',
-//     '×': '*',
-// }
-
-export class Calculator {
-    private operator: string | null;
-    private firstOperand: string | null;
-    //  secondOperand: string | null;
-    private waitingForSecondOperand: boolean;
-    private calcHistory: { result: string, expression: string }[];
-
-    //
-    constructor() {
-        this.operator = null;
-        this.firstOperand = null;
-        this.waitingForSecondOperand = false;
-        this.calcHistory = [];
-    }
-
+class calculator {
+    public input = document.getElementById('calculator-screen') as HTMLInputElement;
+    public historyLog = document.querySelectorAll('.calc-history-log');
+    public calcHistory: { result: string, expression: string }[];
+    public digit = '0123456789';
     // all operators
     // {id: string, numOperands: number, calc: (a: number, b?: number) => number}
-    private operators = {
+    public operators = {
         '!': {
             id: 'op-factorial',
             numOperands: 1,
@@ -123,19 +103,15 @@ export class Calculator {
         }
     }
 
-    public reset(): void {
-        this.operator = null;
-        this.firstOperand = null;
-        this.waitingForSecondOperand = false;
+    constructor() {
         this.calcHistory = [];
-        input.value = '0';
     }
 
     public clearLogHistory(): void {
-        historyLog.forEach(elem => elem.innerHTML = '');
+        this.historyLog.forEach(elem => elem.innerHTML = '');
         let item = document.createElement('div');
         item.innerHTML = "There's no history yet";
-        historyLog[0].appendChild(item);
+        this.historyLog[0].appendChild(item);
     }
 
     public clearCalHistory(): void {
@@ -143,35 +119,8 @@ export class Calculator {
         this.clearLogHistory();
     }
 
-    public processButtonStandard(char: string) {
-        // switch (char) {
-        //     case 'Backspace':
-        //         //
-        //         break;
-        if (digit.includes(char)) {
-            if (this.waitingForSecondOperand) {
-                input.value = char;
-                this.waitingForSecondOperand = false;
-            } else {
-                input.value = input.value === '0' ? char : input.value + char;
-            }
-        } else if (char == '.') {
-            if (!input.value.includes('.')) {
-                input.value += '.';
-            }
-        } else if (standardOperator.includes(char)) {
-            this.operator = char;
-            if (this.firstOperand === null) {
-                this.firstOperand = input.value;
-            } else if (!this.waitingForSecondOperand) {
-                this.evalStandard();
-            }
-            this.waitingForSecondOperand = true;
-        }
-    }
-
-    private refreshHistory() {
-        historyLog.forEach(elem => elem.innerHTML = '');
+    public refreshHistory() {
+        this.historyLog.forEach(elem => elem.innerHTML = '');
         for (let i = this.calcHistory.length - 1; i >= 0; i--) {
             let expression = document.createElement('div');
             let result = document.createElement('div');
@@ -179,18 +128,79 @@ export class Calculator {
             expression.innerHTML = `${this.calcHistory[i].expression} =`;
             result.classList.add('calc-history-res');
             result.innerHTML = `${this.calcHistory[i].result} <hr>`;
-            historyLog[0].appendChild(expression)
-            historyLog[0].appendChild(result)
+            this.historyLog[0].appendChild(expression)
+            this.historyLog[0].appendChild(result)
+        }
+    }
+}
+
+export class standardCalculator extends calculator {
+    // remote->pi,pow()
+    public standardOperator = '+-÷×';
+// const mapKeys = {
+//     '÷': '/',
+//     '×': '*',
+// }
+    public operator: string | null;
+    public firstOperand: string | null;
+    //  secondOperand: string | null;
+    public waitingForSecondOperand: boolean;
+
+    constructor() {
+        super();
+        this.operator = null;
+        this.firstOperand = null;
+        this.waitingForSecondOperand = false;
+    }
+
+    public reset(): void {
+        this.operator = null;
+        this.firstOperand = null;
+        this.waitingForSecondOperand = false;
+        this.calcHistory = [];
+        this.input.value = '0';
+    }
+
+    public processButton(char: string) {
+        // switch (char) {
+        //     case 'Backspace':
+        //         //
+        //         break;
+        if (this.digit.includes(char)) {
+            if (this.waitingForSecondOperand) {
+                this.input.value = char;
+                this.waitingForSecondOperand = false;
+            } else {
+                this.input.value = this.input.value === '0' ? char : this.input.value + char;
+            }
+        } else if (char == '.') {
+            if (!this.input.value.includes('.')) {
+                this.input.value += '.';
+            }
+        } else if (this.standardOperator.includes(char)) {
+            this.operator = char;
+            if (this.firstOperand === null) {
+                this.firstOperand = this.input.value;
+            } else if (!this.waitingForSecondOperand) {
+                this.eval();
+            }
+            this.waitingForSecondOperand = true;
         }
     }
 
-    public evalStandard() {
+    public eval() {
         let {firstOperand, operator} = this;
-        let expression: string = `${firstOperand} ${operator} ${input.value}`;
+        let expression: string = `${firstOperand} ${operator} ${this.input.value}`;
         // let op = mapKeys[operator] === undefined ? operator : mapKeys[operator];
-        input.value = this.firstOperand = this.operators[operator].calc(Number.parseFloat(firstOperand), Number.parseFloat(input.value));
-        this.calcHistory.push({result: input.value, expression: expression});
+        this.input.value = this.firstOperand = this.operators[operator].calc(Number.parseFloat(firstOperand), Number.parseFloat(this.input.value));
+        this.calcHistory.push({result: this.input.value, expression: expression});
         this.refreshHistory();
         this.waitingForSecondOperand = true;
+    }
+}
+
+export class scientificCalculator extends calculator {
+    constructor() {
+        super();
     }
 }
